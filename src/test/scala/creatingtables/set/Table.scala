@@ -79,9 +79,9 @@ object Row {
       //create a reader on the slice to read the data
       val reader = data.createReader()
       if (reader.readInt() == UserTable.tableId) //read the tableId and check if it's a User or Product.
-        UserRow(reader.readLong(), reader.readInt(), reader.readString())
+        UserRow(reader.readLong(), reader.readInt(), reader.readRemainingAsString())
       else
-        TimeLogRow(reader.readLong(), reader.readLong(), reader.readString())
+        TimeLogRow(reader.readLong(), reader.readLong(), reader.readRemainingAsString())
     }
   }
 

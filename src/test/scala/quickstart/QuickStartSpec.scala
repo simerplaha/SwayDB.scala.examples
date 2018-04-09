@@ -34,14 +34,19 @@ class QuickStartSpec extends TestBase {
     db.put(1, "one").assertSuccess
     db.get(1).assertSuccess should contain("one")
     db.remove(1).assertSuccess
-    db.batch(Batch.Put(1, "one again"), Batch.Remove(1)).assertSuccess
+    db.batch(
+      Batch.Put(key = 1, value = "one value"),
+      Batch.Update(from = 1, until = 100, value = "range update"),
+      Batch.Remove(key = 1),
+      Batch.Remove(from = 1, until = 100)
+    ).assertSuccess
 
     //write 100 key-values
     (1 to 100) foreach { i => db.put(key = i, value = i.toString).assertSuccess }
     //Iteration: fetch all key-values withing range 10 to 90, update values and batch write updated key-values
     db
       .from(10)
-      .untilKey(_ <= 90)
+      .tillKey(_ <= 90)
       .map {
         case (key, value) =>
           (key, value + "_updated")
@@ -50,6 +55,6 @@ class QuickStartSpec extends TestBase {
         db.batchPut(updatedKeyValues).assertSuccess
     }
     //assert the key-values were updated
-    db.from(10).untilKey(_ <= 90).foreach(_._2 should endWith("_updated"))
+    db.from(10).tillKey(_ <= 90).foreach(_._2 should endWith("_updated"))
   }
 }

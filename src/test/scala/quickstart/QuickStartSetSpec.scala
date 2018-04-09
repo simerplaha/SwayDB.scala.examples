@@ -34,14 +34,20 @@ class QuickStartSetSpec extends TestBase {
     db.add(1).assertSuccess
     db.contains(1).assertSuccess shouldBe true
     db.remove(1).assertSuccess
-    db.batch(Batch.Add(1), Batch.Remove(1)).assertSuccess
+    db.batch(
+      Batch.Add(1),
+      Batch.Remove(1),
+      Batch.Remove(from = 1, until = 100)
+    ).assertSuccess
+
+    db.batchAdd(1, 2)
 
     //write 100 key-values
     (1 to 100) foreach { i => db.add(i).assertSuccess }
     //Iteration: remove all items withing range 1 to 50 and batch add 50 new items ranging from 101 to 150
     db
       .from(1)
-      .until(_ < 50)
+      .till(_ < 50)
       .foreach(db.remove)
       .andThen {
         _ =>

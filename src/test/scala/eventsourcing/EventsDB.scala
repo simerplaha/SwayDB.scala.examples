@@ -68,7 +68,7 @@ class EventsDB(dir: Path) {
     db
       //StartUserAggregate is only a pointer Event to the first Event of the aggregate. Use 'after' to get the first actual Event of the aggregate.
       .after(StartUserAggregate(userId))
-      .until(_.persistentId == userId) //fetch Events for only this User
+      .till(_.persistentId == userId) //fetch Events for only this User
       .foldLeft(Option.empty[UserState]) { //and then build User's state.
       case (userState, event) =>
         event match {
@@ -94,7 +94,7 @@ class EventsDB(dir: Path) {
     */
   def iterateDB =
     db.
-      until(_.eventTypeId == SequencePointerEvent.eventTypeId)
+      till(_.eventTypeId == SequencePointerEvent.eventTypeId)
       .foreach {
         case sequenceEvent: SequencePointerEvent =>
           db.get(ReadOnlyEvent(sequenceEvent.targetPersistentId, sequenceEvent.sequenceNumber)) foreach println

@@ -54,7 +54,7 @@ class StockOrderingSpec extends TestBase {
           orderId = reader.readInt(),
           price = reader.readInt(),
           purchaseTime = reader.readLong(),
-          stockCode = reader.readString()
+          stockCode = reader.readRemainingAsString()
         )
       }
     }

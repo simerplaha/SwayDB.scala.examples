@@ -46,7 +46,7 @@ class SetTableSpec extends TestBase {
     //iterating TimeLogs
     db
       .from(TimeLogRow(1, 0, ""))
-      .until(_.table == TimeLogTable)
+      .till(_.table == TimeLogTable)
       .foreach {
         row =>
           println("Time log: " + row)
@@ -55,7 +55,7 @@ class SetTableSpec extends TestBase {
     //iterating Users
     db
       .from(UserRow(1, 0, ""))
-      .until(_.table == UserTable)
+      .till(_.table == UserTable)
       .foreach {
         row =>
           println("User: " + row)

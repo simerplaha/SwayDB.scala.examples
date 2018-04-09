@@ -48,7 +48,7 @@ class SliceReaderSpec extends WordSpec with Matchers {
       ProgramPerformance(
         speedScore = reader.readInt(),
         linesOfCode = reader.readLong(),
-        language = reader.readString()
+        language = reader.readRemainingAsString()
       ) shouldBe program
     }
   }

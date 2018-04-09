@@ -43,13 +43,13 @@ class TableSpec extends TestBase {
     //iterating Task keys
     db
       .from(TimeLogKey(1))
-      .untilKey(_.table == TimeLogTable)
+      .tillKey(_.table == TimeLogTable)
       .foreach(println)
 
     //iterating User keys
     db
       .from(UserKey(1))
-      .untilKey(_.table == UserTable)
+      .tillKey(_.table == UserTable)
       .foreach(println)
   }
 }

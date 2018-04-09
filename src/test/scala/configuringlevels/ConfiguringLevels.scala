@@ -36,7 +36,7 @@ object ConfiguringLevels extends App {
         dir = "/Disk1/myDB",
         mapSize = 4.mb,
         mmap = true,
-        recoveryMode = RecoveryMode.Report,
+        recoveryMode = RecoveryMode.ReportFailure,
         acceleration =
           (level0Meter: Level0Meter) =>
             Accelerator.cruise(level0Meter)
@@ -60,7 +60,6 @@ object ConfiguringLevels extends App {
         mmapAppendix = true,
         appendixFlushCheckpointSize = 4.mb,
         pushForward = false,
-        cacheKeysOnCreate = false,
         bloomFilterFalsePositiveRate = 0.1,
         throttle =
           (levelMeter: LevelMeter) =>

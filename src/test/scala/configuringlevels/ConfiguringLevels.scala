@@ -37,6 +37,7 @@ object ConfiguringLevels extends App {
         mapSize = 4.mb,
         mmap = true,
         recoveryMode = RecoveryMode.ReportFailure,
+        minTimeLeftToUpdateExpiration = 10.seconds,
         acceleration =
           (level0Meter: Level0Meter) =>
             Accelerator.cruise(level0Meter)
@@ -45,6 +46,7 @@ object ConfiguringLevels extends App {
         segmentSize = 4.mb,
         pushForward = false,
         bloomFilterFalsePositiveRate = 0.1,
+        minTimeLeftToUpdateExpiration = 10.seconds,
         throttle =
           (levelMeter: LevelMeter) =>
             if (levelMeter.levelSize > 1.gb)
@@ -61,6 +63,7 @@ object ConfiguringLevels extends App {
         appendixFlushCheckpointSize = 4.mb,
         pushForward = false,
         bloomFilterFalsePositiveRate = 0.1,
+        minTimeLeftToUpdateExpiration = 10.seconds,
         throttle =
           (levelMeter: LevelMeter) =>
             if (levelMeter.segmentsCount > 100)

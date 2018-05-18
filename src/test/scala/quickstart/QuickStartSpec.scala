@@ -36,9 +36,9 @@ class QuickStartSpec extends TestBase {
     db.remove(1).assertSuccess
     db.batch(
       Batch.Put(key = 1, value = "one value"),
-      Batch.Update(from = 1, until = 100, value = "range update"),
+      Batch.Update(from = 1, to = 100, value = "range update"),
       Batch.Remove(key = 1),
-      Batch.Remove(from = 1, until = 100)
+      Batch.Remove(from = 1, to = 100)
     ).assertSuccess
 
     //write 100 key-values

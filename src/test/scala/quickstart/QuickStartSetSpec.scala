@@ -37,7 +37,7 @@ class QuickStartSetSpec extends TestBase {
     db.batch(
       Batch.Add(1),
       Batch.Remove(1),
-      Batch.Remove(from = 1, until = 100)
+      Batch.Remove(from = 1, to = 100)
     ).assertSuccess
 
     db.batchAdd(1, 2)

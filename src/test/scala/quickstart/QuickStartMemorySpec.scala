@@ -21,15 +21,15 @@ package quickstart
 
 import base.TestBase
 
-class QuickStartSpec extends TestBase {
+class QuickStartMemorySpec extends TestBase {
 
   "Quick start" in {
 
-    import swaydb._ //import database API
+    import swaydb._
     import swaydb.serializers.Default._ //import default serializers
 
     //Create a persistent database. If the directories do not exist, they will be created.
-    val db = SwayDB.persistent[Int, String](dir = dir.resolve("disk1")).assertSuccess
+    val db = SwayDB.memory[Int, String]().assertSuccess
 
     db.put(1, "one").assertSuccess
     db.get(1).assertSuccess should contain("one")
@@ -56,5 +56,11 @@ class QuickStartSpec extends TestBase {
     }
     //assert the key-values were updated
     db.from(10).tillKey(_ <= 90).foreach(_._2 should endWith("_updated"))
+
+    //or using functions to update
+    db.cacheFunction("myFunctionId", _ + "updated again with function").assertSuccess
+    db.update(from = 10, to = 90, functionId = "myFunctionId").assertSuccess
+    //assert the key-values were updated
+    db.from(10).tillKey(_ <= 90).foreach(_._2 should endWith("updated again with function"))
   }
 }

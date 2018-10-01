@@ -19,8 +19,12 @@
 
 package configuringlevels
 
+import java.nio.file.Files
+
 import swaydb.data.accelerate.{Accelerator, Level0Meter}
+import swaydb.data.api.grouping.{Compression, GroupGroupingStrategy, KeyValueGroupingStrategy}
 import swaydb.data.compaction.{LevelMeter, Throttle}
+import swaydb.data.compression.{LZ4Compressor, LZ4Decompressor, LZ4Instance}
 import swaydb.data.config.{ConfigWizard, MMAP, RecoveryMode}
 
 import scala.concurrent.duration._
@@ -47,6 +51,8 @@ object ConfiguringLevels extends App {
         pushForward = false,
         bloomFilterFalsePositiveRate = 0.1,
         minTimeLeftToUpdateExpiration = 10.seconds,
+        compressDuplicateValues = true,
+        groupingStrategy = None,
         throttle =
           (levelMeter: LevelMeter) =>
             if (levelMeter.levelSize > 1.gb)
@@ -64,6 +70,39 @@ object ConfiguringLevels extends App {
         pushForward = false,
         bloomFilterFalsePositiveRate = 0.1,
         minTimeLeftToUpdateExpiration = 10.seconds,
+        compressDuplicateValues = true,
+        groupingStrategy =
+          Some(
+            KeyValueGroupingStrategy.Size(
+              size = 1.mb,
+              indexCompressions =
+                Seq(
+                  Compression.LZ4(
+                    compressor = (LZ4Instance.FastestJavaInstance, LZ4Compressor.FastCompressor(minCompressionPercentage = 20.0)),
+                    decompressor = (LZ4Instance.FastestJavaInstance, LZ4Decompressor.FastDecompressor)
+                  ),
+                  Compression.Snappy(minCompressionPercentage = 20.0),
+                  Compression.UnCompressedGroup
+                ),
+              valueCompressions =
+                Seq(
+                  Compression.LZ4(
+                    compressor = (LZ4Instance.FastestJavaInstance, LZ4Compressor.FastCompressor(minCompressionPercentage = 20.0)),
+                    decompressor = (LZ4Instance.FastestJavaInstance, LZ4Decompressor.FastDecompressor)
+                  ),
+                  Compression.Snappy(minCompressionPercentage = 20.0),
+                  Compression.UnCompressedGroup
+                ),
+              groupGroupingStrategy =
+                Some(
+                  GroupGroupingStrategy.Count(
+                    count = 1000,
+                    indexCompression = Compression.UnCompressedGroup,
+                    valueCompression = Compression.UnCompressedGroup
+                  )
+                )
+            )
+          ),
         throttle =
           (levelMeter: LevelMeter) =>
             if (levelMeter.segmentsCount > 100)
@@ -73,7 +112,7 @@ object ConfiguringLevels extends App {
       )
       .addTrashLevel //level3
 
-  import swaydb.order.KeyOrder.default //import default sorting
+  implicit val ordering =  swaydb.order.KeyOrder.default //import default sorting
   implicit val ec = SwayDB.defaultExecutionContext //import default ExecutionContext
 
   val db = //initialise the database with the above configuration

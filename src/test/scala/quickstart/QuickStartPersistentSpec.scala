@@ -56,10 +56,5 @@ class QuickStartPersistentSpec extends TestBase {
     }
     //assert the key-values were updated
     db.from(10).tillKey(_ <= 90).foreach(_._2 should endWith("_updated"))
-
-    db.cacheFunction("myFunctionId", _ + "updated again with function").assertSuccess
-    db.update(from = 10, to = 90, functionId = "myFunctionId").assertSuccess
-    //assert the key-values were updated
-    db.from(10).tillKey(_ <= 90).foreach(_._2 should endWith("updated again with function"))
   }
 }

@@ -56,11 +56,5 @@ class QuickStartMemorySpec extends TestBase {
     }
     //assert the key-values were updated
     db.from(10).tillKey(_ <= 90).foreach(_._2 should endWith("_updated"))
-
-    //or using functions to update
-    db.cacheFunction("myFunctionId", _ + "updated again with function").assertSuccess
-    db.update(from = 10, to = 90, functionId = "myFunctionId").assertSuccess
-    //assert the key-values were updated
-    db.from(10).tillKey(_ <= 90).foreach(_._2 should endWith("updated again with function"))
   }
 }

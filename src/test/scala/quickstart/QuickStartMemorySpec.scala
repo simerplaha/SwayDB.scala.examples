@@ -28,7 +28,7 @@ class QuickStartMemorySpec extends TestBase {
     import swaydb._
     import swaydb.serializers.Default._ //import default serializers
 
-    //Create a persistent database. If the directories do not exist, they will be created.
+    //Create a memory database
     val db = SwayDB.memory[Int, String]().assertSuccess
 
     db.put(1, "one").assertSuccess

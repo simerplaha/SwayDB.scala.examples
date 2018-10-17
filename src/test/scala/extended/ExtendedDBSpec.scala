@@ -56,26 +56,3 @@ class ExtendedDBSpec extends TestBase {
 
   }
 }
-
-object ExtendDB extends App {
-
-  import swaydb._
-  import swaydb.serializers.Default._
-
-  //including the above import all include the extension api.
-  import swaydb.extension._
-
-  //add .extend to extend the database
-  val rootMap = SwayDB.memory[Key[String], Option[String]]().get.extend.get
-
-  //Nested map hierarchy
-  //rootMap
-  //   |____ subMap1
-  //            |____ subMap2
-  //
-  val subMap1 = rootMap.putMap(key = "sub map 1", value = "another map").get
-  val subMap2 = subMap1.putMap(key = "sub map 2", value = "another nested map").get
-
-  rootMap.fromSubMap()
-}
-

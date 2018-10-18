@@ -2,7 +2,7 @@ name := "SwayDB.examples"
 
 version := "0.1"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.7"
 
 resolvers += Opts.resolver.sonatypeSnapshots
 resolvers += Opts.resolver.sonatypeReleases

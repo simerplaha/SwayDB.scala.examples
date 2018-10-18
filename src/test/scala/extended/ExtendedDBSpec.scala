@@ -19,11 +19,7 @@
 
 package extended
 
-import java.nio.charset.StandardCharsets
-
 import base.TestBase
-import swaydb.data.slice.Slice
-import swaydb.serializers.Serializer
 
 class ExtendedDBSpec extends TestBase {
 

@@ -26,8 +26,8 @@ import creatingtables.set.Table.{TimeLogTable, UserTable}
 class SetTableSpec extends TestBase {
 
   "SetTableSpec" in {
-    import swaydb._
     import Row.rowSortOrder
+    import swaydb._
 
     //A Set database (SwaySetDB) is different to a key-value database (SwayMapDB).
     //It stores Primary key and row data together and requires only one disk seek for fetching both data.

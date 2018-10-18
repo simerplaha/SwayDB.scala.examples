@@ -19,8 +19,6 @@
 
 package configuringlevels
 
-import java.nio.file.Files
-
 import swaydb.data.accelerate.{Accelerator, Level0Meter}
 import swaydb.data.api.grouping.{Compression, GroupGroupingStrategy, KeyValueGroupingStrategy}
 import swaydb.data.compaction.{LevelMeter, Throttle}

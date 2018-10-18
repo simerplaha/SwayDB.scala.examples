@@ -25,7 +25,7 @@ class QuickStartPersistentSpec extends TestBase {
 
   "Quick start" in {
 
-    import swaydb._ //import database API
+    import swaydb._
     import swaydb.serializers.Default._ //import default serializers
 
     //Create a persistent database. If the directories do not exist, they will be created.

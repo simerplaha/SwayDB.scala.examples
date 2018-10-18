@@ -57,3 +57,31 @@ class ExtendedDBSpec extends TestBase {
     rootMap.maps.toList should contain only ((1, "sub map 1"))
   }
 }
+
+object ExtendDB extends App {
+
+  import swaydb._
+  import swaydb.serializers.Default._
+
+  //including the above import all include the extension api.
+  import swaydb.extension._
+
+  //add .extend to enable extension
+  val rootMap = SwayDB.memory[Key[String], Option[String]]().get.extend.get
+
+  //Nested map hierarchy
+  //rootMap
+  //   |____ subMap1
+  //            |____ subMap2
+  //
+  //now we can create nested maps.
+  val subMap1 =
+    rootMap
+      .maps
+      .put(key = "sub map 1", value = "another map").get
+
+  val subMap2 =
+    subMap1
+      .maps
+      .put(key = "sub map 2", value = "another nested map").get
+}

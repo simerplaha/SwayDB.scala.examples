@@ -19,7 +19,11 @@
 
 package extended
 
+import java.nio.charset.StandardCharsets
+
 import base.TestBase
+import swaydb.data.slice.Slice
+import swaydb.serializers.Serializer
 
 class ExtendedDBSpec extends TestBase {
 
@@ -50,8 +54,8 @@ class ExtendedDBSpec extends TestBase {
     subMap1.toList should contain only ((1, "one value")) //fetch all key-values of subMap1
     subMap2.toList should contain only ((2, "two value")) //fetch all key-values of subMap2
 
-    //fetch all key-values of subMap1 including all the subMaps of subMap1
-    subMap1.maps.toList should contain only((1, "one value"), (2, "sub map 2"))
+    //fetch all subMaps of subMap1
+    subMap1.maps.toList should contain only ((2, "sub map 2"))
 
     //Here only the maps of the first
     rootMap.maps.toList should contain only ((1, "sub map 1"))

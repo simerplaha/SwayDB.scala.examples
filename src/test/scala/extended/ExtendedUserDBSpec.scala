@@ -27,7 +27,8 @@ import swaydb.data.slice.Slice
 import swaydb.serializers.Serializer
 
 /**
-  * Each User has a dedicated User Map which stores Email, Password & a Map of Product user purchased.
+  * Each User has a dedicated User Map which stores
+  * Email, Password & also contains another Map of Products the user owns.
   */
 //Map hierarchy looks like this
 //RootMap
@@ -75,20 +76,40 @@ class ExtendedUserDBSpec extends TestBase {
     //creating
     val rootMap = SwayDB.memory[Key[MapKey], Option[String]]().assertSuccess.extend.assertSuccess
 
-    //create User1's map under rootMap
-    val userMap = rootMap.maps.put(MapKey.UserMap(1), "User 1's map").assertSuccess
+    /** ************************************************************
+      * ************************ WRITES ****************************
+      * ************************************************************/
+    val userMap = //create User1's map under rootMap
+      rootMap
+        .maps
+        .put(MapKey.UserMap(1), "User 1's map").assertSuccess
     //under userMap write the Email and Password of the User
     userMap.put(MapKey.Email, "user1@email.com").assertSuccess
     userMap.put(MapKey.Password, "thePassword").assertSuccess
     //under userMap also create another Map that contains the Products this user owns
-    val productsMap = userMap.maps.put(MapKey.Products, "Map for products User1 owns").assertSuccess
+    val productsMap =
+      userMap
+        .maps
+        .put(MapKey.Products, "Map for products User1 owns").assertSuccess
+    //add a product to the User's product Map
     productsMap.put(MapKey.Product("MacBook Pro"), "2.8 GHz Intel Core i7").assertSuccess
 
-    //read and assert the above map hierarchy.
-    val user1Map = rootMap.maps.get(MapKey.UserMap(1)).assertGet
+    /** ************************************************************
+      * ************************ READS *****************************
+      * ************************************************************/
+    val user1Map = //get the User map from rootMap
+      rootMap
+        .maps
+        .get(MapKey.UserMap(1)).assertGet
+    //User map contains User's Email and Password.
     user1Map.get(MapKey.Email).assertGet shouldBe "user1@email.com"
     user1Map.get(MapKey.Password).assertGet shouldBe "thePassword"
-    val user1sProductsMap = user1Map.maps.get(MapKey.Products).assertGet
+    //get the product's map from User's map
+    val user1sProductsMap =
+      user1Map
+        .maps
+        .get(MapKey.Products).assertGet
+    //products map contains Product info.
     user1sProductsMap.get(MapKey.Product("MacBook Pro")).assertGet shouldBe "2.8 GHz Intel Core i7"
 
   }

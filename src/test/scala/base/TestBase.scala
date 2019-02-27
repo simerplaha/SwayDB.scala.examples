@@ -22,13 +22,11 @@ package base
 import java.io.IOException
 import java.nio.file._
 import java.nio.file.attribute.BasicFileAttributes
-
-import org.scalatest.{BeforeAndAfterAll, WordSpec}
-
+import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
 import scala.concurrent.duration.FiniteDuration
 import scala.util.Random
 
-trait TestBase extends WordSpec with CommonAssertions with BeforeAndAfterAll {
+trait TestBase extends WordSpec with Matchers with BeforeAndAfterAll {
 
   def deleteDB: Boolean = true
 

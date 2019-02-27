@@ -20,9 +20,9 @@
 package creatingtables.set
 
 import creatingtables.set.Table.{TimeLogTable, UserTable}
+import swaydb.data.order.KeyOrder
 import swaydb.data.slice.Slice
 import swaydb.data.util.ByteSizeOf
-import swaydb.order.KeyOrder
 import swaydb.serializers.Serializer
 
 sealed trait Table {

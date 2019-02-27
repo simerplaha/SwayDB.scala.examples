@@ -21,7 +21,7 @@ package monix
 
 import base.TestBase
 
-class SimpleMonixReactiveSpec extends TestBase {
+class IteratableMonixReactiveSpec extends TestBase {
 
   "Monix reactive example" in {
 
@@ -29,12 +29,12 @@ class SimpleMonixReactiveSpec extends TestBase {
     import swaydb.serializers.Default._ //import default serializers
 
     //Create a memory database.
-    val db = SwayDB.memory[Int, String]().assertSuccess
+    val db = memory.Map[Int, String]().get
 
     //write some data
     (1 to 100) foreach {
       i =>
-        db.put(i, i.toString + " value").assertSuccess
+        db.put(i, i.toString + " value").get
     }
 
     import monix.execution.Scheduler.Implicits.global

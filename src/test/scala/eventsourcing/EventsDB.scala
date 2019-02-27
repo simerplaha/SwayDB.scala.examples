@@ -19,15 +19,12 @@
 
 package eventsourcing
 
+import eventsourcing.Event._
 import java.nio.file.Path
 import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicLong
-
-import eventsourcing.Event._
-import swaydb.SwayDB
+import swaydb.data.IO
 import swaydb.data.accelerate.Level0Meter
-
-import scala.util.Try
 
 case class UserState(userId: Long,
                      name: String,
@@ -36,28 +33,28 @@ case class UserState(userId: Long,
 
 class EventsDB(dir: Path) {
 
-  import Event.eventSortOrder
+  import swaydb._
 
-  private val db = SwayDB.persistentSet[Event](dir).get
+  private val db = persistent.Set[Event](dir).get
 
   private val seqNumberGenerator = new AtomicLong(1)
 
   /**
     * Persists partial Event that inputs the next event sequence number and returns an [[Event]].
     */
-  def writeEvent(event: Long => Event): Try[Level0Meter] = {
+  def writeEvent(event: Long => Event): IO[Level0Meter] = {
     //initialise the Event with the next Sequence number.
     event(seqNumberGenerator.getAndIncrement()) match {
       case event @ UserCreated(persistentId, _, _) =>
         //for every UserCreated event, SequencePointerEvent and StartUserAggregate gets batched.
         //SequencePointerEvent are used to iterate the Events in the order they were inserted. Eg: global iterators
         //StartUserAggregate indicates the starting Event for this aggregate which can be used to build aggregates.
-        db.batchAdd(SequencePointerEvent(event.persistentId, event.sequenceNumber), StartUserAggregate(persistentId), event)
+        db.add(SequencePointerEvent(event.persistentId, event.sequenceNumber), StartUserAggregate(persistentId), event)
 
       case event =>
         //for all Events SequencePointerEvent also gets persistent. SequencePointerEvent is a pointer event which can be
         //used to iterate events in the actual order they were inserted.
-        db.batchAdd(SequencePointerEvent(event.persistentId, event.sequenceNumber), event)
+        db.add(SequencePointerEvent(event.persistentId, event.sequenceNumber), event)
     }
   }
 

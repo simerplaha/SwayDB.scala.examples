@@ -30,7 +30,7 @@ class CRUDSpec extends TestBase {
     //CREATE
     (1 to keyValueCount) foreach {
       key =>
-        db.put(key, key.toString).assertSuccess
+        db.put(key, key.toString).get
     }
     //check size
     db.size shouldBe keyValueCount
@@ -56,7 +56,7 @@ class CRUDSpec extends TestBase {
     db.map {
       case (key, value) =>
         (key, value + " value updated")
-    } andThen db.batchPut assertSuccess
+    } andThen db.put get
 
     //ASSERT UPDATE
     db.foreach {
@@ -65,7 +65,7 @@ class CRUDSpec extends TestBase {
     }
 
     //DELETE
-    db.batchRemove(db.keys).assertSuccess
+    db.remove(db.keys).get
     db.isEmpty shouldBe true
   }
 
@@ -76,7 +76,7 @@ class CRUDSpec extends TestBase {
 
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        SwayDB.persistent[Int, String](dir.resolve("persistentDB")).assertSuccess
+        persistent.Map[Int, String](dir.resolve("persistentDB")).get
       }
     }
   }
@@ -84,7 +84,7 @@ class CRUDSpec extends TestBase {
   "A memory database" should {
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        SwayDB.memory[Int, String]().assertSuccess
+        memory.Map[Int, String]().get
       }
     }
   }
@@ -92,7 +92,7 @@ class CRUDSpec extends TestBase {
   "A memory-persistent database" should {
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        SwayDB.memoryPersistent[Int, String](dir.resolve("memoryPersistentDB")).assertSuccess
+        eventually.persistent.Map[Int, String](dir.resolve("memoryPersistentDB")).get
       }
     }
   }

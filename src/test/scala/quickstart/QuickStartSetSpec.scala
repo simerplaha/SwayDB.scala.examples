@@ -29,21 +29,21 @@ class QuickStartSetSpec extends TestBase {
     import swaydb.serializers.Default._ //import default serializers
 
     //Create a persistent set database. If the directories do not exist, they will be created.
-    val db = SwayDB.persistentSet[Int](dir = dir.resolve("disk1")).assertSuccess
+    val db = persistent.Set[Int](dir = dir.resolve("disk1")).get
 
-    db.add(1).assertSuccess
-    db.contains(1).assertSuccess shouldBe true
-    db.remove(1).assertSuccess
-    db.batch(
-      Batch.Add(1),
-      Batch.Remove(1),
-      Batch.Remove(from = 1, to = 100)
-    ).assertSuccess
+    db.add(1).get
+    db.contains(1).get shouldBe true
+    db.remove(1).get
+    db.commit(
+      Prepare.Add(1),
+      Prepare.Remove(1),
+      Prepare.Remove(from = 1, to = 100)
+    ).get
 
-    db.batchAdd(1, 2)
+    db.add(1, 2)
 
     //write 100 key-values
-    (1 to 100) foreach { i => db.add(i).assertSuccess }
+    (1 to 100) foreach { i => db.add(i).get }
     //Iteration: remove all items withing range 1 to 50 and batch add 50 new items ranging from 101 to 150
     db
       .from(1)
@@ -51,7 +51,7 @@ class QuickStartSetSpec extends TestBase {
       .foreach(db.remove)
       .andThen {
         _ =>
-          db.batchAdd(101 to 150).assertSuccess
+          db.add(101 to 150).get
       }
     //assert the key-values were updated
     db.toList shouldBe (50 to 150)

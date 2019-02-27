@@ -32,15 +32,15 @@ class SetTableSpec extends TestBase {
     //A Set database (SwaySetDB) is different to a key-value database (SwayMapDB).
     //It stores Primary key and row data together and requires only one disk seek for fetching both data.
     //A partial key ordering is used for storing data required fields.
-    val db = SwayDB.persistentSet[Row](dir = dir).assertSuccess
+    val db = persistent.Set[Row](dir = dir).get
 
     //write key-values to each Table
     (1 to 10) foreach {
       i =>
         //write to User table
-        db.add(UserRow(key = i, age = 20 + 1, name = s"User $i")).assertSuccess
+        db.add(UserRow(key = i, age = 20 + 1, name = s"User $i")).get
         //create a task in Time log table
-        db.add(TimeLogRow(key = i, time = System.currentTimeMillis(), task = s"Task done $i")).assertSuccess
+        db.add(TimeLogRow(key = i, time = System.currentTimeMillis(), task = s"Task done $i")).get
     }
 
     //iterating TimeLogs

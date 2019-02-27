@@ -20,10 +20,9 @@
 package eventsourcing
 
 import java.time.LocalDateTime
-
+import swaydb.data.order.KeyOrder
 import swaydb.data.slice.Slice
 import swaydb.data.util.ByteSizeOf
-import swaydb.order.KeyOrder
 import swaydb.serializers.Serializer
 
 sealed trait Event {

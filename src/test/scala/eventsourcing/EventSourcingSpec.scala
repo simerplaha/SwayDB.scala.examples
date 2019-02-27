@@ -38,7 +38,7 @@ class EventSourcingSpec extends TestBase {
             createTime = LocalDateTime.now(),
             name = randomCharacters()
           )
-        ).assertSuccess
+        ).get
     }
     //update names of all 10 Users
     (1 to 10) foreach {
@@ -49,7 +49,7 @@ class EventSourcingSpec extends TestBase {
             createTime = LocalDateTime.now(),
             name = "name updated"
           )
-        ).assertSuccess
+        ).get
     }
     //delete all 10 Users
     (1 to 10) foreach {
@@ -59,7 +59,7 @@ class EventSourcingSpec extends TestBase {
             persistentId = userId,
             createTime = LocalDateTime.now()
           )
-        ).assertSuccess
+        ).get
     }
 
     db.printAll
@@ -67,7 +67,7 @@ class EventSourcingSpec extends TestBase {
     //re-build user aggregates
     (1 to 10) foreach {
       userId =>
-        val user = db.buildUserAggregate(userId).assertGet
+        val user = db.buildUserAggregate(userId).get
         user.isDeleted shouldBe true
         user.name shouldBe "name updated"
     }

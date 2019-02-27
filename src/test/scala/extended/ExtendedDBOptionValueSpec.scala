@@ -45,10 +45,10 @@ class ExtendedDBOptionValueSpec extends TestBase {
           Some(Some(StringSerializer.read(data)))
     }
 
-    val rootMap = SwayDB.memory[Key[Int], Option[Option[String]]]().assertSuccess.extend.assertSuccess
+    val rootMap = memory.Map[Key[Int], Option[Option[String]]]().get.extend.get
 
-    rootMap.put(1, None).assertSuccess
-    rootMap.put(2, Some("some value")).assertSuccess
+    rootMap.put(1, None).get
+    rootMap.put(2, Some("some value")).get
 
     rootMap.toList shouldBe List((1, None), (2, Some("some value")))
   }

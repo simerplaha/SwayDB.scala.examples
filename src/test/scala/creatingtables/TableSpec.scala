@@ -29,15 +29,15 @@ class TableSpec extends TestBase {
   "TableSpec" in {
     import swaydb._
 
-    val db = SwayDB.persistent[PrimaryKey, Row](dir = dir).assertSuccess
+    val db = persistent.Map[PrimaryKey, Row](dir = dir).get
 
     //write key-values to each Table
     (1 to 10) foreach {
       i =>
         //write to User table
-        db.put(UserKey(i), UserRow(age = i, name = s"User $i")).assertSuccess
+        db.put(UserKey(i), UserRow(age = i, name = s"User $i")).get
         //write to Task table
-        db.put(TimeLogKey(i), TimeLogRow(time = i, task = s"Task done $i")).assertSuccess
+        db.put(TimeLogKey(i), TimeLogRow(time = i, task = s"Task done $i")).get
     }
 
     //iterating Task keys

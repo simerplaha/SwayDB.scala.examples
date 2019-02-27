@@ -24,8 +24,8 @@ import swaydb.data.api.grouping.{Compression, GroupGroupingStrategy, KeyValueGro
 import swaydb.data.compaction.{LevelMeter, Throttle}
 import swaydb.data.compression.{LZ4Compressor, LZ4Decompressor, LZ4Instance}
 import swaydb.data.config.{ConfigWizard, MMAP, RecoveryMode}
-
 import scala.concurrent.duration._
+import swaydb.data.order.KeyOrder
 
 object ConfiguringLevels extends App {
 
@@ -39,7 +39,6 @@ object ConfiguringLevels extends App {
         mapSize = 4.mb,
         mmap = true,
         recoveryMode = RecoveryMode.ReportFailure,
-        minTimeLeftToUpdateExpiration = 10.seconds,
         acceleration =
           (level0Meter: Level0Meter) =>
             Accelerator.cruise(level0Meter)
@@ -48,8 +47,8 @@ object ConfiguringLevels extends App {
         segmentSize = 4.mb,
         pushForward = false,
         bloomFilterFalsePositiveRate = 0.1,
-        minTimeLeftToUpdateExpiration = 10.seconds,
         compressDuplicateValues = true,
+        deleteSegmentsEventually = true,
         groupingStrategy = None,
         throttle =
           (levelMeter: LevelMeter) =>
@@ -64,10 +63,10 @@ object ConfiguringLevels extends App {
         segmentSize = 4.mb,
         mmapSegment = MMAP.WriteAndRead,
         mmapAppendix = true,
+        deleteSegmentsEventually = true,
         appendixFlushCheckpointSize = 4.mb,
         pushForward = false,
         bloomFilterFalsePositiveRate = 0.1,
-        minTimeLeftToUpdateExpiration = 10.seconds,
         compressDuplicateValues = true,
         groupingStrategy =
           Some(
@@ -110,7 +109,7 @@ object ConfiguringLevels extends App {
       )
       .addTrashLevel //level3
 
-  implicit val ordering =  swaydb.order.KeyOrder.default //import default sorting
+  implicit val ordering = KeyOrder.default //import default sorting
   implicit val ec = SwayDB.defaultExecutionContext //import default ExecutionContext
 
   val db = //initialise the database with the above configuration

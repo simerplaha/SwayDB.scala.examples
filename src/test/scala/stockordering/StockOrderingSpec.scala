@@ -68,7 +68,7 @@ class StockOrderingSpec extends TestBase {
             (order2.stockCode, order2.purchaseTime, order2.orderId)
       }
 
-    val db = SwayDB.persistentSet[StockOrder](dir = dir.resolve("stockOrdersDB")).assertSuccess
+    val db = persistent.Set[StockOrder](dir = dir.resolve("stockOrdersDB")).get
 
     //shuffle ids so that data gets inserted in random order
     Random.shuffle(1 to 15) foreach {

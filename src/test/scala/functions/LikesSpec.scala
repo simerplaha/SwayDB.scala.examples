@@ -20,44 +20,35 @@
 package functions
 
 import base.TestBase
+import swaydb._ //import API
+import swaydb.serializers.Default._ //import default serializers
 
 class LikesSpec extends TestBase {
 
-  "count likes" in {
+  "increment likes count" in {
 
-    import swaydb._
-    import swaydb.serializers.Default._
+    val likesMap = memory.Map[String, Int]().get //create likes database map.
 
-    val likesMap = memory.Map[String, Int]().get
+    likesMap.put(key = "SwayDB", value = 0) //initial entry with 0 likes.
 
-    (1 to 100) foreach {
-      i =>
-        likesMap.put(i + "@email.com", 0)
-    }
+    //function that increments likes by 1
+    //in SQL this would be "UPDATE LIKES_TABLE SET LIKES = LIKES + 1"
+    def incrementLikes(currentLikes: Int) = Apply.Update(currentLikes + 1)
 
-    likesMap.applyFunction(key = "user1", functionID = "increment likes counts")
-
-    val incrementLikes =
+    //register the above likes function
+    val likesFunctionId =
       likesMap.registerFunction(
-        functionID = "my likes counts",
-        function =
-          (likes: Int) =>
-            Apply.Update(likes + 1)
+        functionID = "increment likes counts",
+        function = incrementLikes(_)
       )
 
-    //concurrently apply the function
+    //concurrently apply 100 likes to key SwayDB using the above registered function's functionId.
     (1 to 100).par foreach {
       _ =>
-        (1 to 100).par foreach {
-          i =>
-            likesMap.applyFunction(i + "@email.com", incrementLikes).get
-        }
+        likesMap.applyFunction("SwayDB", likesFunctionId).get
     }
 
-    //all functions applied return expected 100 likes in total.
-    (1 to 100).par foreach {
-      i =>
-        likesMap.get(i + "@email.com").get.get shouldBe 100
-    }
+    //total likes == 100
+    likesMap.get("SwayDB").get should contain(100)
   }
 }

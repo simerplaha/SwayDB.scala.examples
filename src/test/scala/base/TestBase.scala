@@ -28,14 +28,22 @@ import scala.util.Random
 
 trait TestBase extends WordSpec with Matchers with BeforeAndAfterAll {
 
-  def deleteDB: Boolean = true
-
   val dir =
     Paths.get(getClass.getClassLoader.getResource("").getPath)
       .getParent
       .getParent
       .resolve("TEST_DATABASES")
       .resolve(this.getClass.getSimpleName)
+
+  override protected def afterAll(): Unit =
+    walkDeleteFolder(dir)
+
+  override protected def beforeAll(): Unit = {
+    if (!Files.exists(dir)) Files.createDirectories(dir)
+    super.beforeAll()
+  }
+
+  def deleteDB: Boolean = true
 
   def randomCharacters(size: Int = 10) = Random.alphanumeric.take(size).mkString
 
@@ -63,8 +71,4 @@ trait TestBase extends WordSpec with Matchers with BeforeAndAfterAll {
           FileVisitResult.CONTINUE
         }
       })
-
-  override protected def afterAll(): Unit =
-    walkDeleteFolder(dir)
-
 }

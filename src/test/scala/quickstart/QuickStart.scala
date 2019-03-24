@@ -23,12 +23,11 @@ object QuickStart extends App {
   //Iteration: fetch all key-values withing range 10 to 90, update values and atomically write updated key-values
   db
     .from(10)
-    .tillKey(_ <= 90)
+    .takeWhileKey(_ <= 90)
     .map {
       case (key, value) =>
         (key, value + "_updated")
-    } andThen {
-      updatedKeyValues =>
-        db.put(updatedKeyValues)
-  }
+    }
+    .flatMap(_.toSeq.flatMap(db.put))
+    .get
 }

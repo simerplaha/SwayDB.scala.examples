@@ -81,7 +81,7 @@ class StockOrderingSpec extends TestBase {
           db add StockOrder(i, i, System.currentTimeMillis(), "TSLA")
     }
     //stockCodes are in order of AAPL, GOOGL and then TSLA
-    db.map(_.stockCode) shouldBe
+    db.map(_.stockCode).get.toSeq.get shouldBe
       List(
         "AAPL", "AAPL", "AAPL", "AAPL", "AAPL",
         "GOOGL", "GOOGL", "GOOGL", "GOOGL", "GOOGL",

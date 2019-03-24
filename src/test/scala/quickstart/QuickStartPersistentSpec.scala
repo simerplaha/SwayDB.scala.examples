@@ -46,15 +46,14 @@ class QuickStartPersistentSpec extends TestBase {
     //Iteration: fetch all key-values withing range 10 to 90, update values and batch write updated key-values
     db
       .from(10)
-      .tillKey(_ <= 90)
+      .takeWhileKey(_ <= 90)
       .map {
         case (key, value) =>
           (key, value + "_updated")
-      } andThen {
-      updatedKeyValues =>
-        db.put(updatedKeyValues).get
-    }
+      }
+      .flatMap(_.toSeq.flatMap(db.put))
+      .get
     //assert the key-values were updated
-    db.from(10).tillKey(_ <= 90).foreach(_._2 should endWith("_updated"))
+    db.from(10).takeWhileKey(_ <= 90).foreach(_._2 should endWith("_updated")).get
   }
 }

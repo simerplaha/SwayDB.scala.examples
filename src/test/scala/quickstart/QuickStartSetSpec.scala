@@ -47,13 +47,13 @@ class QuickStartSetSpec extends TestBase {
     //Iteration: remove all items withing range 1 to 50 and batch add 50 new items ranging from 101 to 150
     db
       .from(1)
-      .till(_ < 50)
+      .takeWhile(_ < 50)
       .foreach(db.remove)
       .andThen {
         _ =>
           db.add(101 to 150).get
       }
     //assert the key-values were updated
-    db.toList shouldBe (50 to 150)
+    db.toSeq.get shouldBe (50 to 150)
   }
 }

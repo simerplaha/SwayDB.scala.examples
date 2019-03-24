@@ -59,7 +59,6 @@ class ExtendedUserDBSpec extends TestBase {
   "Extend the database" in {
 
     import swaydb._
-    import swaydb.extension._
     import swaydb.serializers.Default._
 
     /**
@@ -74,7 +73,7 @@ class ExtendedUserDBSpec extends TestBase {
     }
 
     //creating
-    val rootMap = memory.Map[Key[MapKey], Option[String]]().get.extend.get
+    val rootMap = extensions.memory.Map[MapKey, String]().get
 
     /** ************************************************************
       * ************************ WRITES ****************************

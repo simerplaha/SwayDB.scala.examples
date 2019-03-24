@@ -5,10 +5,9 @@ object ExtendDB extends App {
   import swaydb._
   import swaydb.serializers.Default._
   //including the above import all include the extension api.
-  import swaydb.extension._
 
   //add .extend to enable extension
-  val rootMap = memory.Map[Key[String], Option[String]]().flatMap(_.extend).get
+  val rootMap = extensions.memory.Map[String, String]().get
 
   //Nested map hierarchy
   //rootMap

@@ -28,7 +28,6 @@ class ExtendedDBOptionValueSpec extends TestBase {
   "Value = Option[Option[String]]" in {
 
     import swaydb._
-    import swaydb.extension._
     import swaydb.serializers.Default._
 
     implicit object OptionOptionStringSerializer extends Serializer[Option[Option[String]]] {
@@ -45,11 +44,11 @@ class ExtendedDBOptionValueSpec extends TestBase {
           Some(Some(StringSerializer.read(data)))
     }
 
-    val rootMap = memory.Map[Key[Int], Option[Option[String]]]().get.extend.get
+    val rootMap = extensions.memory.Map[Int, Option[String]]().get
 
     rootMap.put(1, None).get
     rootMap.put(2, Some("some value")).get
 
-    rootMap.toList shouldBe List((1, None), (2, Some("some value")))
+    rootMap.toSeq.get shouldBe List((1, None), (2, Some("some value")))
   }
 }

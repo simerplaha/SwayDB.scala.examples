@@ -20,20 +20,21 @@
 package crud
 
 import base.TestBase
+import swaydb.data.IO
 import swaydb.serializers.Default._
 
 class CRUDSpec extends TestBase {
 
   import swaydb._
 
-  def assertCRUD(keyValueCount: Int)(db: swaydb.Map[Int, String]): Unit = {
+  def assertCRUD(keyValueCount: Int)(db: swaydb.Map[Int, String, IO]): Unit = {
     //CREATE
     (1 to keyValueCount) foreach {
       key =>
         db.put(key, key.toString).get
     }
     //check size
-    db.size shouldBe keyValueCount
+    db.size.get shouldBe keyValueCount
 
     //READ FORWARD
     db.foldLeft(0) {
@@ -42,31 +43,34 @@ class CRUDSpec extends TestBase {
         key shouldBe expectedKey
         value shouldBe expectedKey.toString
         expectedKey
-    } shouldBe keyValueCount
+    }.get shouldBe keyValueCount
 
     //READ REVERSE
-    db.foldRight(keyValueCount) {
-      case ((key, value), size) =>
+    db.reverse.foldLeft(keyValueCount) {
+      case (size, (key, value)) =>
         key shouldBe size
         value shouldBe size.toString
         size - 1
-    } shouldBe 0
+    }.get shouldBe 0
 
     //UPDATE
-    db.map {
-      case (key, value) =>
-        (key, value + " value updated")
-    } andThen db.put get
+    db
+      .map {
+        case (key, value) =>
+          (key, value + " value updated")
+      }
+      .flatMap(_.toSeq.flatMap(db.put))
+      .get
 
     //ASSERT UPDATE
     db.foreach {
       case (key, value) =>
         value should endWith("value updated")
-    }
+    }.get
 
     //DELETE
-    db.remove(db.keys).get
-    db.isEmpty shouldBe true
+    db.keys.toSeq.flatMap(db.remove).get
+    db.isEmpty.get shouldBe true
   }
 
   //number of key-values

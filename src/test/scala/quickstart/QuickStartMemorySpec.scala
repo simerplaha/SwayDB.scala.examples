@@ -51,7 +51,8 @@ class QuickStartMemorySpec extends TestBase {
         case (key, value) =>
           (key, value + "_updated")
       }
-      .flatMap(_.toSeq.flatMap(db.put))
+      .flatMap(_.toSeq)
+      .flatMap(db.put)
       .get
     //assert the key-values were updated
     db.from(10).takeWhileKey(_ <= 90).foreach(_._2 should endWith("_updated")).get

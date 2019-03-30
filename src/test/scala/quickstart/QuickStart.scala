@@ -10,7 +10,7 @@ object QuickStart extends App {
   import swaydb._
   import swaydb.serializers.Default._ //import default serializers
 
-  val db = memory.Map[Int, String]().get.blockingAPI[Try] //Create a memory database
+  val db = memory.Map[Int, String]().get //Create a memory database
 
   db.put(1, "one").get
   db.get(1).get

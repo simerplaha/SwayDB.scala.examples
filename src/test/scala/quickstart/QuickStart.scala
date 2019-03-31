@@ -1,9 +1,6 @@
 package quickstart
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Try
-import swaydb.Wrap._
 
 object QuickStart extends App {
 
@@ -17,13 +14,7 @@ object QuickStart extends App {
   db.remove(1).get
 
   //write 100 key-values atomically
-  (1 to 100) map {
-    key =>
-      (key, key.toString)
-  } andThen {
-    keyValues =>
-      db.put(keyValues).get
-  }
+  db.put((1 to 100).map(key => (key, key.toString)))
 
   //write 100 key-values
   (1 to 100) foreach { i => db.put(key = i, value = i.toString).get }

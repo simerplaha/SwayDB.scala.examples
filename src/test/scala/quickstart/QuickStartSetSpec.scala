@@ -49,10 +49,7 @@ class QuickStartSetSpec extends TestBase {
       .from(1)
       .takeWhile(_ < 50)
       .foreach(db.remove)
-      .andThen {
-        _ =>
-          db.add(101 to 150).get
-      }
+      .flatMap(_ => db.add(101 to 150))
     //assert the key-values were updated
     db.toSeq.get shouldBe (50 to 150)
   }

@@ -51,7 +51,6 @@ class QuickStartMemorySpec extends TestBase {
         case (key, value) =>
           (key, value + "_updated")
       }
-      .flatMap(_.toSeq)
       .flatMap(db.put)
       .get
     //assert the key-values were updated

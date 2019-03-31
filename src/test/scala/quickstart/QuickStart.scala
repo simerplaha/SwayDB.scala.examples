@@ -36,7 +36,6 @@ object QuickStart extends App {
       case (key, value) =>
         (key, value + "_updated")
     }
-    .flatMap(_.toSeq)
     .flatMap(db.put)
     .get
 }

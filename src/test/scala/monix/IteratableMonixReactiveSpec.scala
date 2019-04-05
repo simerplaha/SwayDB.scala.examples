@@ -23,6 +23,20 @@ import base.TestBase
 
 class IteratableMonixReactiveSpec extends TestBase {
 
+
+  import scala.concurrent.duration._
+  "Dasdas" in {
+
+    System.currentTimeMillis()
+
+    val deadline: Deadline = 10.seconds.fromNow
+
+    import java.time.Instant
+    import java.time.ZoneId
+    val instant = Instant.ofEpochMilli(deadline.time.toMillis)
+    instant.atZone(ZoneId.systemDefault).toLocalDateTime
+  }
+
   "Monix reactive example" in {
 
     import swaydb._
@@ -42,8 +56,9 @@ class IteratableMonixReactiveSpec extends TestBase {
 
     val everyTenthValue =
       Observable.fromIterable(db.asScala)
-        .filter { case (key, value) => key % 10 == 0 }
-        .map(_._2)
+//        .drop(1)
+        .map(_._1)
+        .take(10)
         .dump("Value")
 
     everyTenthValue.subscribe()

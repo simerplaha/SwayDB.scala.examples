@@ -49,6 +49,6 @@ class ExtendedDBOptionValueSpec extends TestBase {
     rootMap.put(1, None).get
     rootMap.put(2, Some("some value")).get
 
-    rootMap.toSeq.get shouldBe List((1, None), (2, Some("some value")))
+    rootMap.materialize.get shouldBe List((1, None), (2, Some("some value")))
   }
 }

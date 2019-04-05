@@ -59,17 +59,18 @@ class CRUDSpec extends TestBase {
         case (key, value) =>
           (key, value + " value updated")
       }
-      .flatMap(_.toSeq.flatMap(db.put))
+      .materialize
+      .flatMap(db.put)
       .get
 
     //ASSERT UPDATE
     db.foreach {
       case (key, value) =>
         value should endWith("value updated")
-    }.get
+    }.materialize
 
     //DELETE
-    db.keys.toSeq.flatMap(db.remove).get
+    db.keys.stream.materialize.flatMap(db.remove).get
     db.isEmpty.get shouldBe true
   }
 

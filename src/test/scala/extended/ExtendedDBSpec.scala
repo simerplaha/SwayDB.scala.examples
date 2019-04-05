@@ -46,13 +46,13 @@ class ExtendedDBSpec extends TestBase {
     val subMap2 = subMap1.maps.put(2, "sub map 2").get //create a nested subMap under subMap1
     subMap2.put(2, "two value").get //insert a key-value into sub-map 2
 
-    subMap1.toSeq.get should contain only ((1, "one value")) //fetch all key-values of subMap1
-    subMap2.toSeq.get should contain only ((2, "two value")) //fetch all key-values of subMap2
+    subMap1.materialize.get should contain only ((1, "one value")) //fetch all key-values of subMap1
+    subMap2.materialize.get should contain only ((2, "two value")) //fetch all key-values of subMap2
 
     //fetch all subMaps of subMap1
-    subMap1.maps.toSeq.get should contain only ((2, "sub map 2"))
+    subMap1.maps.materialize.get should contain only ((2, "sub map 2"))
 
     //Here only the maps of the first
-    rootMap.maps.toSeq.get should contain only ((1, "sub map 1"))
+    rootMap.maps.materialize.get should contain only ((1, "sub map 1"))
   }
 }

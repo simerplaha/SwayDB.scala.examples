@@ -46,14 +46,15 @@ class QuickStartMemorySpec extends TestBase {
     //Iteration: fetch all key-values withing range 10 to 90, update values and batch write updated key-values
     db
       .from(10)
-      .takeWhileKey(_ <= 90)
+      .takeWhile(_._1 <= 90)
       .map {
         case (key, value) =>
           (key, value + "_updated")
       }
+      .materialize
       .flatMap(db.put)
       .get
     //assert the key-values were updated
-    db.from(10).takeWhileKey(_ <= 90).foreach(_._2 should endWith("_updated")).get
+    db.from(10).takeWhile(_._1 <= 90).foreach(_._2 should endWith("_updated")).materialize.get
   }
 }

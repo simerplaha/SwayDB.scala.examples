@@ -49,7 +49,7 @@ class StockOrderingSpec extends TestBase {
       }
 
       override def read(data: Slice[Byte]): StockOrder = {
-        val reader = data.createReader()
+        val reader = data.createReaderUnsafe()
         StockOrder(
           orderId = reader.readInt(),
           price = reader.readInt(),

@@ -23,8 +23,9 @@ import eventsourcing.Event._
 import java.nio.file.Path
 import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicLong
-import swaydb.data.IO
-import swaydb.data.accelerate.Level0Meter
+
+import swaydb.IO.Done
+import swaydb.data.accelerate.LevelZeroMeter
 
 case class UserState(userId: Long,
                      name: String,
@@ -42,7 +43,7 @@ class EventsDB(dir: Path) {
   /**
     * Persists partial Event that inputs the next event sequence number and returns an [[Event]].
     */
-  def writeEvent(event: Long => Event): IO[Level0Meter] = {
+  def writeEvent(event: Long => Event): IO.ApiIO[Done] = {
     //initialise the Event with the next Sequence number.
     event(seqNumberGenerator.getAndIncrement()) match {
       case event @ UserCreated(persistentId, _, _) =>
@@ -67,18 +68,18 @@ class EventsDB(dir: Path) {
       .after(StartUserAggregate(userId))
       .takeWhile(_.persistentId == userId) //fetch Events for only this User
       .foldLeft(Option.empty[UserState]) { //and then build User's state.
-      case (userState, event) =>
-        event match {
-          case UserCreated(persistentId, createTime, name) =>
-            Some(UserState(userId = persistentId, name = name, isDeleted = false, createTime = createTime))
+        case (userState, event) =>
+          event match {
+            case UserCreated(persistentId, createTime, name) =>
+              Some(UserState(userId = persistentId, name = name, isDeleted = false, createTime = createTime))
 
-          case UserNameUpdated(_, _, name) =>
-            userState.map(_.copy(name = name))
+            case UserNameUpdated(_, _, name) =>
+              userState.map(_.copy(name = name))
 
-          case UserDeleted(_, _) =>
-            userState.map(_.copy(isDeleted = true))
-        }
-    }.toTry.get
+            case UserDeleted(_, _) =>
+              userState.map(_.copy(isDeleted = true))
+          }
+      }.toTry.get
 
   //print all Event. This gives a actual view of how the Events are organised in the database
   def printAll =

@@ -44,7 +44,7 @@ class SliceReaderSpec extends WordSpec with Matchers {
           .close() //close so that Slice's toOffset is re-adjusted to the last written byte.
 
       //read Slice[Byte] to rebuild the case class
-      val reader = slice.createReader()
+      val reader = slice.createReaderUnsafe()
       ProgramPerformance(
         speedScore = reader.readInt(),
         linesOfCode = reader.readLong(),

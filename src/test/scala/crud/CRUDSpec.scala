@@ -20,14 +20,13 @@
 package crud
 
 import base.TestBase
-import swaydb.data.IO
 import swaydb.serializers.Default._
 
 class CRUDSpec extends TestBase {
 
   import swaydb._
 
-  def assertCRUD(keyValueCount: Int)(db: swaydb.Map[Int, String, IO]): Unit = {
+  def assertCRUD(keyValueCount: Int)(db: swaydb.Map[Int, String, IO.ApiIO]): Unit = {
     //CREATE
     (1 to keyValueCount) foreach {
       key =>

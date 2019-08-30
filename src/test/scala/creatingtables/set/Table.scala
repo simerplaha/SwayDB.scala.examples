@@ -77,7 +77,7 @@ object Row {
 
     override def read(data: Slice[Byte]): Row = {
       //create a reader on the slice to read the data
-      val reader = data.createReader()
+      val reader = data.createReaderUnsafe()
       if (reader.readInt() == UserTable.tableId) //read the tableId and check if it's a User or Product.
         UserRow(reader.readLong(), reader.readInt(), reader.readRemainingAsString())
       else

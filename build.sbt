@@ -10,7 +10,7 @@ resolvers += Opts.resolver.sonatypeStaging
 
 libraryDependencies ++=
   Seq(
-    "io.swaydb" %% "swaydb" % "0.9-ALPHA.1",
+    "io.swaydb" %% "swaydb" % "0.9-ALPHA.2",
     "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2",
     "io.monix" %% "monix" % "3.0.0-RC1",
     "org.scalatest" %% "scalatest" % "3.0.4" % Test,

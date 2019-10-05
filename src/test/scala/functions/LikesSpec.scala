@@ -27,7 +27,7 @@ class LikesSpec extends TestBase {
 
   "increment likes count" in {
 
-    val likesMap = memory.Map[String, Int]().get //create likes database map.
+    val likesMap = memory.Map[String, Int, String]().get //create likes database map.
 
     likesMap.put(key = "SwayDB", value = 0) //initial entry with 0 likes.
 
@@ -38,7 +38,7 @@ class LikesSpec extends TestBase {
     //register the above likes function
     val likesFunctionId =
       likesMap.registerFunction(
-        functionID = "increment likes counts",
+        functionId = "increment likes counts",
         function = incrementLikes(_)
       )
 

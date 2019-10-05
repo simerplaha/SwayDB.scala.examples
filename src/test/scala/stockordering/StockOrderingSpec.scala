@@ -49,7 +49,7 @@ class StockOrderingSpec extends TestBase {
       }
 
       override def read(data: Slice[Byte]): StockOrder = {
-        val reader = data.createReaderUnsafe()
+        val reader = data.createReader()
         StockOrder(
           orderId = reader.readInt(),
           price = reader.readInt(),
@@ -68,7 +68,7 @@ class StockOrderingSpec extends TestBase {
             (order2.stockCode, order2.purchaseTime, order2.orderId)
       }
 
-    val db = persistent.Set[StockOrder](dir = dir.resolve("stockOrdersDB")).get
+    val db = persistent.Set[StockOrder, Nothing](dir = dir.resolve("stockOrdersDB")).get
 
     //shuffle ids so that data gets inserted in random order
     Random.shuffle(1 to 15) foreach {

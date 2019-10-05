@@ -29,7 +29,7 @@ class QuickStartSetSpec extends TestBase {
     import swaydb.serializers.Default._ //import default serializers
 
     //Create a persistent set database. If the directories do not exist, they will be created.
-    val db = persistent.Set[Int](dir = dir.resolve("disk1")).get
+    val db = persistent.Set[Int, Nothing](dir = dir.resolve("disk1")).get
 
     db.add(1).get
     db.contains(1).get shouldBe true

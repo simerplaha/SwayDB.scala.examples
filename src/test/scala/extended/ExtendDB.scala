@@ -7,7 +7,7 @@ object ExtendDB extends App {
   //including the above import all include the extension api.
 
   //add .extend to enable extension
-  val rootMap = extensions.memory.Map[String, String]().right.get.right.get
+  val rootMap = extensions.memory.Map[String, String, Nothing]().right.get.right.get
 
   //Nested map hierarchy
   //rootMap

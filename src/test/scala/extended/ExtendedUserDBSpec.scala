@@ -73,7 +73,7 @@ class ExtendedUserDBSpec extends TestBase {
     }
 
     //creating
-    val rootMap = extensions.memory.Map[MapKey, String]().right.get.right.get
+    val rootMap = extensions.memory.Map[MapKey, String, Nothing]().right.get.right.get
 
     /** ************************************************************
       * ************************ WRITES ****************************

@@ -26,7 +26,7 @@ class CRUDSpec extends TestBase {
 
   import swaydb._
 
-  def assertCRUD(keyValueCount: Int)(db: swaydb.Map[Int, String, IO.ApiIO]): Unit = {
+  def assertCRUD(keyValueCount: Int)(db: swaydb.Map[Int, String, Nothing, IO.ApiIO]): Unit = {
     //CREATE
     (1 to keyValueCount) foreach {
       key =>
@@ -80,7 +80,7 @@ class CRUDSpec extends TestBase {
 
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        persistent.Map[Int, String](dir.resolve("persistentDB")).get
+        persistent.Map[Int, String, Nothing](dir.resolve("persistentDB")).get
       }
     }
   }
@@ -88,7 +88,7 @@ class CRUDSpec extends TestBase {
   "A memory database" should {
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        memory.Map[Int, String]().get
+        memory.Map[Int, String, Nothing]().get
       }
     }
   }
@@ -96,7 +96,7 @@ class CRUDSpec extends TestBase {
   "A memory-persistent database" should {
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        eventually.persistent.Map[Int, String](dir.resolve("memoryPersistentDB")).get
+        eventually.persistent.Map[Int, String, Nothing](dir.resolve("memoryPersistentDB")).get
       }
     }
   }

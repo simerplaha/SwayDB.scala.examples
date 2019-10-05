@@ -43,7 +43,7 @@ class IteratableMonixReactiveSpec extends TestBase {
     import swaydb.serializers.Default._ //import default serializers
 
     //Create a memory database.
-    val db = memory.Map[Int, String]().get
+    val db = memory.Map[Int, String, Nothing]().get
 
     //write some data
     (1 to 100) foreach {

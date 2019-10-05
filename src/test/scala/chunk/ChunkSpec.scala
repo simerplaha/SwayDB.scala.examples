@@ -29,7 +29,7 @@ class ChunkSpec extends TestBase {
     import swaydb._
     import swaydb.serializers.Default._
 
-    val db = persistent.Map[Int, Slice[Byte]](dir = dir).get
+    val db = persistent.Map[Int, Slice[Byte], Nothing](dir = dir).get
 
     val file: Array[Byte] = randomBytes(3.mb) //a 3.mb byte array
 

@@ -148,7 +148,7 @@ object Event {
     }
 
     override def read(data: Slice[Byte]): Event = {
-      val reader = data.createReaderUnsafe()
+      val reader = data.createReader()
       val persistentId = reader.readLong()
       val sequenceNumber = reader.readLong()
       val createTime = LocalDateTime.parse(reader.read(reader.readInt()).readString())

@@ -37,7 +37,7 @@ class ExtendedDBSpec extends TestBase {
     //Create an extended database by calling .extend.
     //the Key and value should be of type Key[T] and Option[V] respectively for the extension to work.
     //the database returns a rootMap under which all other nested maps can be created.
-    val rootMap = extensions.memory.Map[Int, String]().right.get.right.get
+    val rootMap = extensions.memory.Map[Int, String, Nothing]().right.get.right.get
     rootMap.put(1, "root map's first key-value").get //insert key-value to root map
 
     val subMap1 = rootMap.maps.put(1, "sub map 1").get //create the first subMap

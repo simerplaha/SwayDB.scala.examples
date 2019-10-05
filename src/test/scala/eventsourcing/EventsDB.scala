@@ -36,7 +36,7 @@ class EventsDB(dir: Path) {
 
   import swaydb._
 
-  private val db = persistent.Set[Event](dir).get
+  private val db = persistent.Set[Event, Nothing](dir).get
 
   private val seqNumberGenerator = new AtomicLong(1)
 

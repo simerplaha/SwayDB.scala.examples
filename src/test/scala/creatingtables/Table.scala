@@ -71,7 +71,7 @@ object PrimaryKey {
 
     override def read(data: Slice[Byte]): PrimaryKey = {
       //create a reader on the slice to read the data
-      val reader = data.createReaderUnsafe()
+      val reader = data.createReader()
       if (reader.readInt() == UserTable.tableId) //read the tableId and check if it's a User or Product table.
         UserKey(reader.readLong())
       else
@@ -117,7 +117,7 @@ object Row {
 
     override def read(data: Slice[Byte]): Row = {
       //create a reader on the slice to read the data
-      val reader = data.createReaderUnsafe()
+      val reader = data.createReader()
       if (reader.readInt() == UserTable.tableId) //read the tableId and check if it's a User or Product.
         UserRow(reader.readInt(), reader.readRemainingAsString())
       else

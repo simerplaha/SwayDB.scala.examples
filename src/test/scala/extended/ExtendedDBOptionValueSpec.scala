@@ -44,7 +44,7 @@ class ExtendedDBOptionValueSpec extends TestBase {
           Some(Some(StringSerializer.read(data)))
     }
 
-    val rootMap = extensions.memory.Map[Int, Option[String]]().right.get.right.get
+    val rootMap = extensions.memory.Map[Int, Option[String], Nothing]().right.get.right.get
 
     rootMap.put(1, None).get
     rootMap.put(2, Some("some value")).get

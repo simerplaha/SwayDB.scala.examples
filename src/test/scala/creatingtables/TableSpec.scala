@@ -29,7 +29,7 @@ class TableSpec extends TestBase {
   "TableSpec" in {
     import swaydb._
 
-    val db = persistent.Map[PrimaryKey, Row](dir = dir).get
+    val db = persistent.Map[PrimaryKey, Row, Nothing](dir = dir).get
 
     //write key-values to each Table
     (1 to 10) foreach {

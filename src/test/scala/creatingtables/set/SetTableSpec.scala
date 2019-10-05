@@ -32,7 +32,7 @@ class SetTableSpec extends TestBase {
     //A Set database (SwaySetDB) is different to a key-value database (SwayMapDB).
     //It stores Primary key and row data together and requires only one disk seek for fetching both data.
     //A partial key ordering is used for storing data required fields.
-    val db = persistent.Set[Row](dir = dir).get
+    val db = persistent.Set[Row, Nothing](dir = dir).get
 
     //write key-values to each Table
     (1 to 10) foreach {

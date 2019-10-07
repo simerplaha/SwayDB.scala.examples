@@ -23,6 +23,8 @@ import base.TestBase
 import monix.eval.Task
 import swaydb.serializers.Default._
 
+import scala.util.Random
+
 class MonixSimpleExample extends TestBase {
 
   "Simple monix example without functions" in {
@@ -32,17 +34,16 @@ class MonixSimpleExample extends TestBase {
     //Create a memory database without functions support (F: Nothing). See MonixExample.scala for an example with function.
     val map = swaydb.memory.Map[Int, String, Nothing, Task]().get
 
-    //write some data
+    //create some random key-values
+    val keyValues =
+      (1 to 100) map {
+        key =>
+          (key, Random.alphanumeric.take(10).mkString)
+      }
+
     val mapSize: Task[Int] =
-      Task
-        .sequence {
-          //write 100 key-values
-          (1 to 100)
-            .map {
-              i =>
-                map.put(i, i.toString + " value")
-            }
-        }
+      map
+        .put(keyValues) //write 100 key-values as single transaction/batch.
         .flatMap {
           _ =>
             //print all key-values

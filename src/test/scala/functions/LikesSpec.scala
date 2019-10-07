@@ -28,7 +28,7 @@ class LikesSpec extends TestBase {
 
   "increment likes count" in {
 
-    val likesMap = memory.Map[String, Int, swaydb.Function[String, Int]]().get //create likes database map.
+    val likesMap = memory.Map[String, Int, swaydb.Function[String, Int], IO.ApiIO]().get //create likes database map.
 
     likesMap.put(key = "SwayDB", value = 0) //initial entry with 0 likes.
 

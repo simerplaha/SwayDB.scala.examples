@@ -5,7 +5,7 @@ object QuickStart extends App {
   import swaydb._
   import swaydb.serializers.Default._ //import default serializers
 
-  val map = memory.Map[Int, String, Nothing]().get //Create a memory database
+  val map = memory.Map[Int, String, Nothing, IO.ApiIO]().get //Create a memory database
 
   map.put(1, "one").get
   map.get(1).get
@@ -13,7 +13,6 @@ object QuickStart extends App {
 
   //write 100 key-values atomically
   map.put(keyValues = (1 to 100).map(key => (key, key.toString))).get
-
 
   val updates: Seq[(Int, String)] = (1 to 100).map(key => (key, key.toString))
   map.put(updates).get

@@ -29,7 +29,7 @@ class QuickStartPersistentSpec extends TestBase {
     import swaydb.serializers.Default._ //import default serializers
 
     //Create a persistent database. If the directories do not exist, they will be created.
-    val db = persistent.Map[Int, String, Nothing](dir = dir.resolve("disk1")).get
+    val db = persistent.Map[Int, String, Nothing, IO.ApiIO](dir = dir.resolve("disk1")).get
 
     db.put(1, "one").get
     db.get(1).get should contain("one")

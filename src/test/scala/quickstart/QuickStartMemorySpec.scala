@@ -29,7 +29,7 @@ class QuickStartMemorySpec extends TestBase {
     import swaydb.serializers.Default._ //import default serializers
 
     //Create a memory database
-    val db = memory.Map[Int, String, Nothing]().get
+    val db = memory.Map[Int, String, Nothing, IO.ApiIO]().get
 
     db.put(1, "one").get
     db.get(1).get should contain("one")

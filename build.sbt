@@ -8,6 +8,8 @@ resolvers += Opts.resolver.sonatypeSnapshots
 resolvers += Opts.resolver.sonatypeReleases
 resolvers += Opts.resolver.sonatypeStaging
 
+val swayDBVersion = "0.10.2"
+
 libraryDependencies ++=
   Seq(
     "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2",
@@ -17,7 +19,6 @@ libraryDependencies ++=
     "io.circe" %% "circe-core" % "0.10.0" % Test,
     "io.circe" %% "circe-generic" % "0.10.0" % Test,
     "io.circe" %% "circe-parser" % "0.10.0" % Test,
-    "io.swaydb" %% "swaydb" % "0.10.2",
-    "io.swaydb" %% "monix" % "0.10.2",
-    "io.monix" %% "monix" % "3.0.0",
+    "io.swaydb" %% "swaydb" % swayDBVersion,
+    "io.swaydb" %% "monix" % swayDBVersion
   )

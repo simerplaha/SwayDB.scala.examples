@@ -12,7 +12,11 @@ object QuickStart extends App {
   map.remove(1).get
 
   //write 100 key-values atomically
-  map.put(keyValues = (1 to 100).map(key => (key, key.toString)))
+  map.put(keyValues = (1 to 100).map(key => (key, key.toString))).get
+
+
+  val updates: Seq[(Int, String)] = (1 to 100).map(key => (key, key.toString))
+  map.put(updates).get
 
   //Iteration: fetch all key-values withing range 10 to 90, update values and atomically write updated key-values
   map

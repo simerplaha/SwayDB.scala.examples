@@ -20,32 +20,36 @@
 package functions
 
 import base.TestBase
-import swaydb._ //import API
+import swaydb._
+import swaydb.data.slice.Slice
 import swaydb.serializers.Default._ //import default serializers
 
 class LikesSpec extends TestBase {
 
   "increment likes count" in {
 
-    val likesMap = memory.Map[String, Int, String]().get //create likes database map.
+    val likesMap = memory.Map[String, Int, swaydb.Function[String, Int]]().get //create likes database map.
 
     likesMap.put(key = "SwayDB", value = 0) //initial entry with 0 likes.
 
     //function that increments likes by 1
     //in SQL this would be "UPDATE LIKES_TABLE SET LIKES = LIKES + 1"
-    def incrementLikes(currentLikes: Int) = Apply.Update(currentLikes + 1)
+
+    val incrementLikes: Function.GetValue[Int] =
+      new swaydb.Function.GetValue[Int] {
+        override def apply(currentLikes: Int): Apply.Map[Int] =
+          Apply.Update(currentLikes + 1)
+
+        override val id: Slice[Byte] = Slice.writeInt(1)
+      }
 
     //register the above likes function
-    val likesFunctionId =
-      likesMap.registerFunction(
-        functionId = "increment likes counts",
-        function = incrementLikes(_)
-      )
+    likesMap.registerFunction(incrementLikes)
 
     //concurrently apply 100 likes to key SwayDB using the above registered function's functionId.
     (1 to 100).par foreach {
       _ =>
-        likesMap.applyFunction("SwayDB", likesFunctionId).get
+        likesMap.applyFunction("SwayDB", incrementLikes).get
     }
 
     //total likes == 100

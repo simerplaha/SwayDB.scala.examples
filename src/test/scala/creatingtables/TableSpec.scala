@@ -45,11 +45,15 @@ class TableSpec extends TestBase {
       .from(TimeLogKey(1))
       .takeWhile(_._1.table == TimeLogTable)
       .foreach(println)
+      .materialize
+      .get
 
     //iterating User keys
     db
       .from(UserKey(1))
       .takeWhile(_._1.table == UserTable)
       .foreach(println)
+      .materialize
+      .get
   }
 }

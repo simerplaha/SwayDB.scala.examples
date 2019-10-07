@@ -62,7 +62,10 @@ class EventSourcingSpec extends TestBase {
         ).get
     }
 
-    db.printAll
+    db
+      .printAll
+      .materialize
+      .get
 
     //re-build user aggregates
     (1 to 10) foreach {
@@ -72,8 +75,10 @@ class EventSourcingSpec extends TestBase {
         user.name shouldBe "name updated"
     }
 
-    db.iterateDB
-
+    db
+      .iterateDB
+      .materialize
+      .get
   }
 
 }

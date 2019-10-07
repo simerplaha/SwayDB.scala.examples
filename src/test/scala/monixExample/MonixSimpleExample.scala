@@ -29,7 +29,7 @@ class MonixSimpleExample extends TestBase {
     implicit val scheduler = monix.execution.Scheduler.global
     import swaydb.monix.Tag._ //provide monix tag to support Task.
 
-    //Create a memory database without functions support (F: Nothing).
+    //Create a memory database without functions support (F: Nothing). See MonixExample.scala for an example with function.
     val map = swaydb.memory.Map[Int, String, Nothing, Task]().get
 
     //write some data
@@ -54,9 +54,9 @@ class MonixSimpleExample extends TestBase {
             map.size
         }
 
-    //the above tasks are not executed yet so that database will be empty.
+    //above tasks are not executed yet so the database stream will return empty
     map.stream.materialize.awaitTask shouldBe empty
-    //execute the task above and it should persist the above 100 key-values.
+    //execute the task above so it persists the above 100 key-values.
     mapSize.awaitTask shouldBe 100
   }
 }

@@ -28,8 +28,8 @@ import org.scalatest.OptionValues._
 class MonixExample extends TestBase {
 
   "Monix example with functions" in {
-    implicit val scheduler = monix.execution.Scheduler.global //provide monix tag to support Task.
-    import swaydb.monix.Tag._ //import monix tag to support the Task container.
+    implicit val scheduler = monix.execution.Scheduler.global
+    import swaydb.monix.Tag._ //import monix tag to support Task.
 
     val map = swaydb.memory.Map[UserKeys, UserValues, UserFunctions, Task]().get //Create a memory database
 

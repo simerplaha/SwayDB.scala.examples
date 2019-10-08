@@ -27,7 +27,7 @@ import org.scalatest.OptionValues._
 
 class ZIOExample extends TestBase {
 
-  "Monix example with functions" in {
+  "ZIO example with functions" in {
     implicit val runtime = new DefaultRuntime {}
     import swaydb.zio.Tag._ //import zio tag to support Task.
 
@@ -48,7 +48,7 @@ class ZIOExample extends TestBase {
     //expire user using the registered ExpireFunction
     map.applyFunction(key = userName, function = UserFunctions.ExpireUserFunction).awaitTask
 
-    //the function expires the user.
+    //the function expires the user "iron_man" - blame Thanos!
     map.get(userName).awaitTask.value shouldBe ExpiredUser
   }
 }

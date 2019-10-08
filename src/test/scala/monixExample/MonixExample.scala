@@ -48,7 +48,7 @@ class MonixExample extends TestBase {
     //expire user using the registered ExpireFunction
     map.applyFunction(key = userName, function = UserFunctions.ExpireUserFunction).awaitTask
 
-    //the function expires the user.
+    //the function expires the user "iron_man" - blame Thanos!
     map.get(userName).awaitTask.value shouldBe ExpiredUser
   }
 }

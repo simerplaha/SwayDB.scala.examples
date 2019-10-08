@@ -8,7 +8,7 @@ resolvers += Opts.resolver.sonatypeSnapshots
 resolvers += Opts.resolver.sonatypeReleases
 resolvers += Opts.resolver.sonatypeStaging
 
-val swayDBVersion = "0.10.2"
+val swayDBVersion = "0.10.3"
 
 libraryDependencies ++=
   Seq(
@@ -20,5 +20,6 @@ libraryDependencies ++=
     "io.circe" %% "circe-generic" % "0.10.0" % Test,
     "io.circe" %% "circe-parser" % "0.10.0" % Test,
     "io.swaydb" %% "swaydb" % swayDBVersion,
-    "io.swaydb" %% "monix" % swayDBVersion
+    "io.swaydb" %% "monix" % swayDBVersion,
+    "io.swaydb" %% "zio" % swayDBVersion
   )

@@ -28,15 +28,15 @@ class LikesSpec extends TestBase {
 
   "increment likes count" in {
 
-    val likesMap = memory.Map[String, Int, swaydb.Function[String, Int], IO.ApiIO]().get //create likes database map.
+    val likesMap = memory.Map[String, Int, PureFunction[String, Int, Apply.Map[Int]], IO.ApiIO]().get //create likes database map.
 
     likesMap.put(key = "SwayDB", value = 0) //initial entry with 0 likes.
 
     //function that increments likes by 1
     //in SQL this would be "UPDATE LIKES_TABLE SET LIKES = LIKES + 1"
 
-    val incrementLikes: Function.GetValue[Int] =
-      new swaydb.Function.GetValue[Int] {
+    val incrementLikes: PureFunction.OnValue[Int, Apply.Map[Int]] =
+      new PureFunction.OnValue[Int, Apply.Map[Int]] {
         override def apply(currentLikes: Int): Apply.Map[Int] =
           Apply.Update(currentLikes + 1)
 

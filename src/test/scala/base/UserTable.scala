@@ -3,7 +3,7 @@ package base
 import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
-import swaydb.Apply
+import swaydb.{Apply, PureFunction}
 import swaydb.data.slice.Slice
 import swaydb.serializers.Serializer
 
@@ -24,8 +24,7 @@ object UserTable {
 
   sealed trait UserFunctions //in SQL there would be update statements.
   object UserFunctions {
-    case object ExpireUserFunction extends UserFunctions with swaydb.Function.GetValue[UserValues] {
-
+    case object ExpireUserFunction extends UserFunctions with PureFunction.OnValue[UserValues, Apply.Map[UserValues]] {
       override def apply(value: UserValues): Apply.Map[UserValues] =
         value match {
           case UserValues.ActiveUser(name, email, lastLogin) =>
@@ -34,14 +33,6 @@ object UserTable {
             else
               Apply.Nothing //else do nothing
         }
-
-      /**
-        * This id gets persisted to the database which is a reference to this function.
-        * each function should get a unique id and should be registered with the database on boot-up.
-        * functions are just like SQL update statements.
-        */
-      override val id: Slice[Byte] =
-        Slice.writeInt(1)
     }
   }
 

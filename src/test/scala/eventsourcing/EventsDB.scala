@@ -19,13 +19,11 @@
 
 package eventsourcing
 
-import eventsourcing.Event._
 import java.nio.file.Path
 import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicLong
 
-import swaydb.IO.Done
-import swaydb.data.accelerate.LevelZeroMeter
+import eventsourcing.Event._
 
 case class UserState(userId: Long,
                      name: String,

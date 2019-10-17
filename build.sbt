@@ -21,7 +21,6 @@ libraryDependencies ++=
     "io.circe" %% "circe-parser" % "0.10.0" % Test,
     "org.junit.jupiter" % "junit-jupiter-api" % "5.5.2" % Test,
     "io.swaydb" %% "swaydb" % swayDBVersion,
-    "io.swaydb" %% "java" % swayDBVersion,
     "io.swaydb" %% "monix" % swayDBVersion,
     "io.swaydb" %% "zio" % swayDBVersion
   )

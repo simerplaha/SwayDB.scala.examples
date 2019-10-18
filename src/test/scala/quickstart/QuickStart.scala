@@ -11,10 +11,10 @@ object QuickStart extends App {
 
   val map = memory.Map[Int, String, FunctionType, IO.ApiIO]().get //Create a memory database
 
-  map.put(key = 1, value = "one").get
-  map.get(key = 1).get
-  map.expire(key = 1, after = 2.seconds).get
-  map.remove(key = 1).get
+  map.put(key = 1, value = "one").get //basic put
+  map.get(key = 1).get //basic get
+  map.expire(key = 1, after = 2.seconds).get //basic expire
+  map.remove(key = 1).get //basic remove
 
   val keyValues = (1 to 100).map(key => (key, s"$key's value"))
   map.put(keyValues).get //write 100 key-values atomically

@@ -21,7 +21,6 @@ package functions
 
 import base.TestBase
 import swaydb._
-import swaydb.data.slice.Slice
 import swaydb.serializers.Default._ //import default serializers
 
 class LikesSpec extends TestBase {
@@ -36,12 +35,8 @@ class LikesSpec extends TestBase {
     //in SQL this would be "UPDATE LIKES_TABLE SET LIKES = LIKES + 1"
 
     val incrementLikes: PureFunction.OnValue[Int, Apply.Map[Int]] =
-      new PureFunction.OnValue[Int, Apply.Map[Int]] {
-        override def apply(currentLikes: Int): Apply.Map[Int] =
-          Apply.Update(currentLikes + 1)
-
-        override val id: Slice[Byte] = Slice.writeInt(1)
-      }
+      (currentLikes: Int) =>
+        Apply.Update(currentLikes + 1)
 
     //register the above likes function
     likesMap.registerFunction(incrementLikes)

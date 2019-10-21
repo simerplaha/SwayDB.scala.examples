@@ -23,6 +23,8 @@ import base.TestBase
 import swaydb._
 import swaydb.serializers.Default._ //import default serializers
 
+import scala.collection.parallel.CollectionConverters._
+
 class LikesSpec extends TestBase {
 
   "increment likes count" in {

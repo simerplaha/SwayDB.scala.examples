@@ -59,7 +59,7 @@ object PrimaryKey {
     override val table: Table = TimeLogTable
   }
 
-  //Serializer for UserKey and TimeLogKey
+  //Serializer for UserKey and TimeLogKey use Slice.
   implicit object KeySerializer extends Serializer[PrimaryKey] {
     override def write(data: PrimaryKey): Slice[Byte] = {
       //Serialise key-values with tableId as the key prefix.

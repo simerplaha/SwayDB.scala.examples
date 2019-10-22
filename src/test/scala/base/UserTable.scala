@@ -7,22 +7,39 @@ import swaydb.{Apply, PureFunction}
 import swaydb.data.slice.Slice
 import swaydb.serializers.Serializer
 
+/**
+  * Test domains objects. Mimics how it similar data would be structured
+  * in a SQL table.
+  *
+  * Supports
+  *
+  * Primary key                      | Columns - All columns stored as a case class.
+  * ------------------------------------------------------------------
+  * [[base.UserTable.UserKeys]]      | [[base.UserTable.UserValues]]
+  * ------------------------------------------------------------------
+  */
 object UserTable {
-  sealed trait UserKeys //In SQL this would be primaryKey
+  //Give key's a type. In SQL this would be primaryKey.
+  sealed trait UserKeys
   object UserKeys {
+    //Uniqueness is on primary key.
     case class UserName(username: String) extends UserKeys
   }
 
-  sealed trait UserValues //in SQL this would be row values
+  //type for values. In SQL this would be row values
+  sealed trait UserValues
   object UserValues {
+    //two value types.
+    //ActiveUser and ExpiredUser.
     case class ActiveUser(name: String,
                           email: String,
                           lastLogin: Long) extends UserValues
 
-    case object ExpiredUser extends UserValues //in SQL this would be row values
+    case object ExpiredUser extends UserValues
   }
 
-  sealed trait UserFunctions //in SQL there would be update statements.
+  //Lets define our functions. In SQL there would be update statements.
+  sealed trait UserFunctions
   object UserFunctions {
     case object ExpireUserFunction extends UserFunctions with PureFunction.OnValue[UserValues, Apply.Map[UserValues]] {
       override def apply(value: UserValues): Apply.Map[UserValues] =
@@ -36,7 +53,9 @@ object UserTable {
     }
   }
 
-  implicit object UserKeySerializer extends Serializer[UserKeys] { //Serializer for key
+  //Serializer for key. Any external serialisation library can be used here.
+  //For this demo we use Circe.
+  implicit object UserKeySerializer extends Serializer[UserKeys] {
     override def write(data: UserKeys): Slice[Byte] =
       Slice.writeString(data.asJson.noSpaces)
 
@@ -44,7 +63,9 @@ object UserTable {
       decode[UserKeys](data.readString()).right.get
   }
 
-  implicit object UserValuesSerializer extends Serializer[UserValues] { //Serializer for Value
+  //Serializer for values. Any external serialisation library can be used here.
+  //For this demo we use Circe.
+  implicit object UserValuesSerializer extends Serializer[UserValues] {
     override def write(data: UserValues): Slice[Byte] =
       Slice.writeString(data.asJson.noSpaces)
 

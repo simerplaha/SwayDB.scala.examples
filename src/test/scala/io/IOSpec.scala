@@ -48,7 +48,7 @@ class IOSpec extends WordSpec with Matchers {
     connected.get shouldBe true
   }
 
-  "never exception" in {
+  "IO as Either - never exception" in {
     //IO can also be used as Scala's Either by defining neverException.
     //This will behave now like Scala's Either.
     implicit val exceptionHandler = IO.ExceptionHandler.neverException[Int]
@@ -62,5 +62,14 @@ class IOSpec extends WordSpec with Matchers {
     left.isRight shouldBe false
     left.isLeft shouldBe true
     left.value shouldBe 12345
+  }
+
+  "IO as Try" in {
+    val io: IO[Throwable, String] =
+      IO {
+        "perform some IO"
+      }
+
+    io.get shouldBe "perform some IO"
   }
 }

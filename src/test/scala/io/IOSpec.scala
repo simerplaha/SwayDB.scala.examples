@@ -4,6 +4,7 @@ import java.rmi.RemoteException
 
 import org.scalatest.{Matchers, WordSpec}
 import swaydb.IO
+import zio.DefaultRuntime
 
 class IOSpec extends WordSpec with Matchers {
 
@@ -71,5 +72,41 @@ class IOSpec extends WordSpec with Matchers {
       }
 
     io.get shouldBe "perform some IO"
+  }
+
+  "Deferred IO" in {
+    //create some deferred IO
+    val defer = IO.Defer("Some IO")
+
+    //since it's not complete this will return false.
+    defer.isComplete shouldBe false
+    //run IO
+    defer.runIO.get shouldBe "Some IO"
+    //is complete
+    defer.isComplete shouldBe true
+  }
+
+  "Run IO under monix" in {
+    //create some deferred IO
+    val defer = IO.Defer("do something here")
+
+    //import Tag and scheduler for Monix.
+    implicit val scheduler = monix.execution.Scheduler.global
+    import swaydb.monix.Tag._ //import monix tag to support Task.
+
+    //defer can now be executed under monix
+    val task: monix.eval.Task[String] = defer.run
+  }
+
+  "Run IO under ZIO" in {
+    //create some deferred IO
+    val defer = IO.Defer("do something here")
+
+    //import Tag and scheduler for ZIO.
+    implicit val runtime = new DefaultRuntime {}
+    import swaydb.zio.Tag._ //import zio tag to support Task.
+
+    //defer can now be executed under monix
+    val task: zio.Task[String] = defer.run
   }
 }

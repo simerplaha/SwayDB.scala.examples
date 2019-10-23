@@ -20,6 +20,7 @@
 package stockordering
 
 import base.TestBase
+import swaydb.data.order.KeyOrder
 import swaydb.data.slice.Slice
 import swaydb.data.util.ByteSizeOf
 import swaydb.serializers.Serializer
@@ -37,6 +38,7 @@ class StockOrderingSpec extends TestBase {
                           purchaseTime: Long, //should use DateTime here but keeping it simple for the example.
                           stockCode: String)
 
+    //build a custom serialiser for StockOrder type. You can also use Circe for this. See other examples.
     implicit object StockOrderSerializer extends Serializer[StockOrder] {
       override def write(data: StockOrder): Slice[Byte] = {
         val stockCodeBytes = data.stockCode.getBytes
@@ -61,18 +63,21 @@ class StockOrderingSpec extends TestBase {
 
     import scala.math.Ordered.orderingToOrdered
 
-    implicit val stockOrderOrdering: Ordering[Slice[Byte]] =
-      Ordering.by[Slice[Byte], StockOrder](StockOrderSerializer.read) {
-        (order1: StockOrder, order2: StockOrder) =>
-          (order1.stockCode, order1.purchaseTime, order1.orderId) compare
-            (order2.stockCode, order2.purchaseTime, order2.orderId)
-      }
+    //build a typed key-order
+    val typedStockOrdering: Ordering[StockOrder] =
+      (order1: StockOrder, order2: StockOrder) =>
+        (order1.stockCode, order1.purchaseTime, order1.orderId) compare
+          (order2.stockCode, order2.purchaseTime, order2.orderId)
+
+    //provide keyOrder to SwayDB. Use Either.Left for untyped and Right for typed.
+    implicit val keyOrder: Either[KeyOrder[Slice[Byte]], KeyOrder[StockOrder]] =
+      Right(KeyOrder(typedStockOrdering))
 
     val db = persistent.Set[StockOrder, Nothing, IO.ApiIO](dir = dir.resolve("stockOrdersDB")).get
 
     //shuffle ids so that data gets inserted in random order
-    Random.shuffle(1 to 15) foreach {
-      i =>
+    Random.shuffle(1 to 15).foreach {
+      i: Int =>
         if (i <= 5) //it's Apple
           db add StockOrder(i, i, System.currentTimeMillis(), "AAPL")
         else if (i <= 10) //it's Google
@@ -88,8 +93,10 @@ class StockOrderingSpec extends TestBase {
         "TSLA", "TSLA", "TSLA", "TSLA", "TSLA"
       )
 
-    db foreach println
-
+    db
+      .foreach(println)
+      .materialize
+      .get
   }
 
 }

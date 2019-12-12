@@ -8,7 +8,7 @@ resolvers += Opts.resolver.sonatypeSnapshots
 resolvers += Opts.resolver.sonatypeReleases
 resolvers += Opts.resolver.sonatypeStaging
 
-val swayDBVersion = "0.10.9"
+val swayDBVersion = "0.11"
 
 libraryDependencies ++=
   Seq(
@@ -20,6 +20,7 @@ libraryDependencies ++=
     "io.circe" %% "circe-parser" % "0.12.2" % Test,
     "org.junit.jupiter" % "junit-jupiter-api" % "5.5.2" % Test,
     "org.scala-lang.modules" %% "scala-parallel-collections" % "0.2.0",
+    "com.softwaremill.common" %% "tagging" % "2.2.1",
     "io.swaydb" %% "swaydb" % swayDBVersion,
     "io.swaydb" %% "monix" % swayDBVersion,
     "io.swaydb" %% "zio" % swayDBVersion

@@ -20,57 +20,72 @@
 package crud
 
 import base.TestBase
+import swaydb.data.util.PipeOps._
 import swaydb.serializers.Default._
 
 class CRUDSpec extends TestBase {
 
   import swaydb._
 
-  def assertCRUD(keyValueCount: Int)(db: swaydb.Map[Int, String, Nothing, IO.ApiIO]): Unit = {
+  implicit val bag = Bag.bagless
+
+  def assertCRUD(keyValueCount: Int)(db: swaydb.Map[Int, String, Nothing, Bag.Less]): Unit = {
     //CREATE
     (1 to keyValueCount) foreach {
       key =>
-        db.put(key, key.toString).get
+        db.put(key, key.toString)
     }
     //check size
-    db.size.get shouldBe keyValueCount
+    db.stream.size shouldBe keyValueCount
 
     //READ FORWARD
-    db.foldLeft(0) {
-      case (size, (key, value)) =>
-        val expectedKey = size + 1
-        key shouldBe expectedKey
-        value shouldBe expectedKey.toString
-        expectedKey
-    }.get shouldBe keyValueCount
+    db
+      .stream
+      .foldLeft(0) {
+        case (size, (key, value)) =>
+          val expectedKey = size + 1
+          key shouldBe expectedKey
+          value shouldBe expectedKey.toString
+          expectedKey
+      } shouldBe keyValueCount
 
     //READ REVERSE
-    db.reverse.foldLeft(keyValueCount) {
-      case (size, (key, value)) =>
-        key shouldBe size
-        value shouldBe size.toString
-        size - 1
-    }.get shouldBe 0
+    db
+      .reverse
+      .stream
+      .foldLeft(keyValueCount) {
+        case (size, (key, value)) =>
+          key shouldBe size
+          value shouldBe size.toString
+          size - 1
+      } shouldBe 0
 
     //UPDATE
     db
+      .stream
       .map {
         case (key, value) =>
           (key, value + " value updated")
       }
       .materialize
-      .flatMap(db.put)
-      .get
+      .==>(db.put)
 
     //ASSERT UPDATE
-    db.foreach {
-      case (key, value) =>
-        value should endWith("value updated")
-    }.materialize
+    db
+      .stream
+      .foreach {
+        case (key, value) =>
+          value should endWith("value updated")
+      }.materialize
 
     //DELETE
-    db.keys.stream.materialize.flatMap(db.remove).get
-    db.isEmpty.get shouldBe true
+    db
+      .keys
+      .stream
+      .materialize
+      .==>(db.remove)
+
+    db.isEmpty shouldBe true
   }
 
   //number of key-values
@@ -80,7 +95,7 @@ class CRUDSpec extends TestBase {
 
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        persistent.Map[Int, String, Nothing, IO.ApiIO](dir.resolve("persistentDB")).get
+        persistent.Map[Int, String, Nothing, Bag.Less](dir.resolve("persistentDB")).get
       }
     }
   }
@@ -88,7 +103,7 @@ class CRUDSpec extends TestBase {
   "A memory database" should {
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        memory.Map[Int, String, Nothing, IO.ApiIO]().get
+        memory.Map[Int, String, Nothing, Bag.Less]().get
       }
     }
   }
@@ -96,7 +111,7 @@ class CRUDSpec extends TestBase {
   "A memory-persistent database" should {
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        eventually.persistent.Map[Int, String, Nothing, IO.ApiIO](dir.resolve("memoryPersistentDB")).get
+        eventually.persistent.Map[Int, String, Nothing, Bag.Less](dir.resolve("memoryPersistentDB")).get
       }
     }
   }

@@ -90,23 +90,23 @@ class IOSpec extends WordSpec with Matchers {
     //create some deferred IO
     val defer = IO.Defer("do something here")
 
-    //import Tag and scheduler for Monix.
+    //import Bag and scheduler for Monix.
     implicit val scheduler = monix.execution.Scheduler.global
-    import swaydb.monix.Tag._ //import monix tag to support Task.
+    import swaydb.monix.Bag._ //import monix tag to support Task.
 
     //defer can now be executed under monix
-    val task: monix.eval.Task[String] = defer.run
+    val task: monix.eval.Task[String] = defer.run(0)
   }
 
   "Run IO under ZIO" in {
     //create some deferred IO
     val defer = IO.Defer("do something here")
 
-    //import Tag and scheduler for ZIO.
+    //import Bag and scheduler for ZIO.
     implicit val runtime = new DefaultRuntime {}
-    import swaydb.zio.Tag._ //import zio tag to support Task.
+    import swaydb.zio.Bag._ //import zio tag to support Task.
 
     //defer can now be executed under monix
-    val task: zio.Task[String] = defer.run
+    val task: zio.Task[String] = defer.run(0)
   }
 }

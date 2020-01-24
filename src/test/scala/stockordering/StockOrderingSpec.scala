@@ -33,6 +33,8 @@ class StockOrderingSpec extends TestBase {
 
     import swaydb._
 
+    implicit val bag = Bag.apiIO
+
     case class StockOrder(orderId: Int,
                           price: Int,
                           purchaseTime: Long, //should use DateTime here but keeping it simple for the example.
@@ -85,15 +87,23 @@ class StockOrderingSpec extends TestBase {
         else //it's Tesla
           db add StockOrder(i, i, System.currentTimeMillis(), "TSLA")
     }
-    //stockCodes are in order of AAPL, GOOGL and then TSLA
-    db.map(_.stockCode).materialize.get shouldBe
+
+    val expected =
       List(
         "AAPL", "AAPL", "AAPL", "AAPL", "AAPL",
         "GOOGL", "GOOGL", "GOOGL", "GOOGL", "GOOGL",
         "TSLA", "TSLA", "TSLA", "TSLA", "TSLA"
       )
 
+    //stockCodes are in order of AAPL, GOOGL and then TSLA
     db
+      .stream
+      .map(_.stockCode)
+      .materialize
+      .get shouldBe expected
+
+    db
+      .stream
       .foreach(println)
       .materialize
       .get

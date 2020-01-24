@@ -28,6 +28,8 @@ class QuickStartSetSpec extends TestBase {
     import swaydb._
     import swaydb.serializers.Default._ //import default serializers
 
+    implicit val bag = Bag.apiIO
+
     //Create a persistent set database. If the directories do not exist, they will be created.
     val db = persistent.Set[Int, Nothing, IO.ApiIO](dir = dir.resolve("disk1")).get
 
@@ -47,6 +49,7 @@ class QuickStartSetSpec extends TestBase {
     //Iteration: remove all items withing range 1 to 50 and batch add 50 new items ranging from 101 to 150
     db
       .from(1)
+      .stream
       .takeWhile(_ < 50)
       .materialize
       .flatMap(db.remove)

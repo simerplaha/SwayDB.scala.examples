@@ -34,6 +34,8 @@ class EventsDB(dir: Path) {
 
   import swaydb._
 
+  implicit val bag = Bag.apiIO
+
   private val db = persistent.Set[Event, Nothing, IO.ApiIO](dir).get
 
   private val seqNumberGenerator = new AtomicLong(1)
@@ -41,7 +43,7 @@ class EventsDB(dir: Path) {
   /**
     * Persists partial Event that inputs the next event sequence number and returns an [[Event]].
     */
-  def writeEvent(event: Long => Event): IO.ApiIO[Done] = {
+  def writeEvent(event: Long => Event): IO.ApiIO[OK] = {
     //initialise the Event with the next Sequence number.
     event(seqNumberGenerator.getAndIncrement()) match {
       case event @ UserCreated(persistentId, _, _) =>
@@ -64,6 +66,7 @@ class EventsDB(dir: Path) {
     db
       //StartUserAggregate is only a pointer Event to the first Event of the aggregate. Use 'after' to get the first actual Event of the aggregate.
       .after(StartUserAggregate(userId))
+      .stream
       .takeWhile(_.persistentId == userId) //fetch Events for only this User
       .foldLeft(Option.empty[UserState]) { //and then build User's state.
         case (userState, event) =>
@@ -81,7 +84,9 @@ class EventsDB(dir: Path) {
 
   //print all Event. This gives a actual view of how the Events are organised in the database
   def printAll =
-    db.foreach(println)
+    db
+      .stream
+      .foreach(println)
 
   /**
     * Full database iteration.
@@ -89,8 +94,9 @@ class EventsDB(dir: Path) {
     * Print all events in the sequence they were inserted by using [[SequencePointerEvent]]
     */
   def iterateDB =
-    db.
-      takeWhile(_.eventTypeId == SequencePointerEvent.eventTypeId)
+    db
+      .stream
+      .takeWhile(_.eventTypeId == SequencePointerEvent.eventTypeId)
       .foreach {
         case sequenceEvent: SequencePointerEvent =>
           db.get(ReadOnlyEvent(sequenceEvent.targetPersistentId, sequenceEvent.sequenceNumber)) foreach println

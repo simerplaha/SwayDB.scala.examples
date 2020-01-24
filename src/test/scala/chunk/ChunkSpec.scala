@@ -29,19 +29,21 @@ class ChunkSpec extends TestBase {
     import swaydb._
     import swaydb.serializers.Default._
 
-    val db = persistent.Map[Int, Slice[Byte], Nothing, IO.ApiIO](dir = dir).get
+    implicit val bag = Bag.bagless
+
+    val db = persistent.Map[Int, Slice[Byte], Nothing, Bag.Less](dir = dir).get
 
     val file: Array[Byte] = randomBytes(3.mb) //a 3.mb byte array
 
     val chunks = Slice(file).groupedSlice(3) //splits of 3 slices of 1.mb each without creating copies of original array
 
-    db.put((1, chunks(0)), (2, chunks(1)), (3, chunks(2))).get //batch write the slices.
+    db.put((1, chunks(0)), (2, chunks(1)), (3, chunks(2))) //batch write the slices.
 
-    db.size.get shouldBe 3
+    db.stream.size shouldBe 3
 
-    val chunk1 = db.get(1).get.get.toArray
-    val chuck2 = db.get(2).get.get.toArray
-    val chuck3 = db.get(3).get.get.toArray
+    val chunk1 = db.get(1).get.toArray
+    val chuck2 = db.get(2).get.toArray
+    val chuck3 = db.get(3).get.toArray
 
     chunk1.length shouldBe 1.mb
     chuck2.length shouldBe 1.mb

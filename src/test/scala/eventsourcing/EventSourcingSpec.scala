@@ -23,10 +23,12 @@ import java.time.LocalDateTime
 
 import base.TestBase
 import eventsourcing.Event._
+import swaydb.Bag
 
 class EventSourcingSpec extends TestBase {
 
   val db = new EventsDB(dir)
+  implicit val bag = Bag.apiIO
 
   "Write Events, iterate Events & build UserState from Events" in {
     //create 10 Users
@@ -65,7 +67,6 @@ class EventSourcingSpec extends TestBase {
     db
       .printAll
       .materialize
-      .get
 
     //re-build user aggregates
     (1 to 10) foreach {
@@ -78,7 +79,6 @@ class EventSourcingSpec extends TestBase {
     db
       .iterateDB
       .materialize
-      .get
   }
 
 }

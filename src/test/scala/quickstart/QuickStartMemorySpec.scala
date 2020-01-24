@@ -28,6 +28,8 @@ class QuickStartMemorySpec extends TestBase {
     import swaydb._
     import swaydb.serializers.Default._ //import default serializers
 
+    implicit val bag = Bag.apiIO
+
     //Create a memory database
     val db = memory.Map[Int, String, Nothing, IO.ApiIO]().get
 
@@ -46,6 +48,7 @@ class QuickStartMemorySpec extends TestBase {
     //Iteration: fetch all key-values withing range 10 to 90, update values and batch write updated key-values
     db
       .from(10)
+      .stream
       .takeWhile(_._1 <= 90)
       .map {
         case (key, value) =>
@@ -55,6 +58,10 @@ class QuickStartMemorySpec extends TestBase {
       .flatMap(db.put)
       .get
     //assert the key-values were updated
-    db.from(10).takeWhile(_._1 <= 90).foreach(_._2 should endWith("_updated")).materialize.get
+    db
+      .from(10)
+      .stream
+      .takeWhile(_._1 <= 90)
+      .foreach(_._2 should endWith("_updated")).materialize.get
   }
 }

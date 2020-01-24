@@ -1,35 +1,38 @@
 package quickstart
 
 import scala.concurrent.duration._
+import swaydb.data.util.PipeOps._
 
 object QuickStart extends App {
 
   import swaydb._
   import swaydb.serializers.Default._ //import default serializers
 
+  implicit val bag = Bag.bagless
+
   type FunctionType = PureFunction[Int, String, Apply.Map[String]] //create the type of Function that can be registered in this Map.
 
-  val map = memory.Map[Int, String, FunctionType, IO.ApiIO]().get //Create a memory database
+  val map = memory.Map[Int, String, FunctionType, Bag.Less]().get //Create a memory database
 
-  map.put(key = 1, value = "one").get
-  map.get(key = 1).get
-  map.expire(key = 1, after = 2.seconds).get
-  map.remove(key = 1).get
+  map.put(key = 1, value = "one")
+  map.get(key = 1).get //returns "one"
+  map.expire(key = 1, after = 2.seconds)
+  map.remove(key = 1)
 
   val keyValues = (1 to 100).map(key => (key, s"$key's value"))
-  map.put(keyValues).get //write 100 key-values atomically
+  map.put(keyValues) //write 100 key-values atomically
 
   //Read and update: Stream all key-values withing range 10 to 90, update values and atomically write updated key-values
   map
     .from(10)
+    .stream
     .takeWhile(_._1 <= 90)
     .map {
       case (key, value) =>
         (key, value + "_updated")
     }
     .materialize
-    .flatMap(map.put)
-    .get
+    .==>(map.put)
 
   //create a function that reads key & value and applies modifications.
   val function: PureFunction.OnKeyValue[Int, String, Apply.Map[String]] =
@@ -43,14 +46,14 @@ object QuickStart extends App {
       else
         Apply.Nothing //or else do nothing
 
-  map.registerFunction(function).get //register the function
+  map.registerFunction(function) //register the function
 
   //apply the function to all key-values ranging 1 to 100.
-  map.applyFunction(from = 1, to = 100, function = function).get
+  map.applyFunction(from = 1, to = 100, function = function)
 
   //print all key-values to see the updates.
   map
+    .stream
     .foreach(println)
     .materialize
-    .get
 }

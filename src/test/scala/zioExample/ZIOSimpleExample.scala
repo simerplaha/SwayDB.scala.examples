@@ -29,7 +29,7 @@ class ZIOSimpleExample extends TestBase {
 
   "Simple ZIO example without functions" in {
     implicit val runtime = new DefaultRuntime {}
-    import swaydb.zio.Tag._ //provide monix tag to support Task.
+    import swaydb.zio.Bag._ //provide monix tag to support Task.
     //Create a memory database without functions support (F: Nothing). See MonixExample.scala for an example with function.
     val map = swaydb.memory.Map[Int, String, Nothing, Task]().get
 
@@ -46,12 +46,12 @@ class ZIOSimpleExample extends TestBase {
         .flatMap {
           _ =>
             //print all key-values
-            map.foreach(println).materialize
+            map.stream.foreach(println).materialize
         }
         .flatMap {
           _ =>
             //result the size of the database.
-            map.size
+            map.stream.size
         }
 
     //above tasks are not executed yet so the database stream will return empty

@@ -27,7 +27,7 @@ class CRUDSpec extends TestBase {
 
   import swaydb._
 
-  implicit val bag = Bag.bagless
+  implicit val bag = Bag.less
 
   def assertCRUD(keyValueCount: Int)(db: swaydb.Map[Int, String, Nothing, Bag.Less]): Unit = {
     //CREATE

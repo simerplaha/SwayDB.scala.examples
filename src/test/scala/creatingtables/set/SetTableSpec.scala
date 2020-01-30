@@ -28,7 +28,7 @@ class SetTableSpec extends TestBase {
   "SetTableSpec" in {
     import Row.rowSortOrder
     import swaydb._
-    implicit val bag = Bag.bagless
+    implicit val bag = Bag.less
 
     //A Set database (SwaySetDB) is different to a key-value database (SwayMapDB).
     //It stores Primary key and row data together and requires only one disk seek for fetching both data.

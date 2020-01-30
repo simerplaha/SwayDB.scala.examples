@@ -28,7 +28,7 @@ class TableSpec extends TestBase {
 
   "TableSpec" in {
     import swaydb._
-    implicit val bag = Bag.bagless
+    implicit val bag = Bag.less
 
     val db = persistent.Map[PrimaryKey, Row, Nothing, Bag.Less](dir = dir).get
 

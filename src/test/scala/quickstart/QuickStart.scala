@@ -7,7 +7,7 @@ object QuickStart extends App {
   import swaydb._
   import swaydb.serializers.Default._ //import default serializers
 
-  implicit val bag = Bag.bagless
+  implicit val bag = Bag.less
 
   type FunctionType = PureFunction[Int, String, Apply.Map[String]] //create the type of Function that can be registered in this Map.
 

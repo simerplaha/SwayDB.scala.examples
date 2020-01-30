@@ -29,7 +29,7 @@ class ChunkSpec extends TestBase {
     import swaydb._
     import swaydb.serializers.Default._
 
-    implicit val bag = Bag.bagless
+    implicit val bag = Bag.less
 
     val db = persistent.Map[Int, Slice[Byte], Nothing, Bag.Less](dir = dir).get
 

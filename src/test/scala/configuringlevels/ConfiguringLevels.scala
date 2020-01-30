@@ -178,7 +178,7 @@ object ConfiguringLevels extends App {
           minIOSeekSize = 4098.bytes,
           skipBlockCacheSeekSize = 4098.bytes * 10,
           cacheCapacity = 1.gb,
-          sweeperActorConfig = ActorConfig.Basic(ec = myTestSingleThreadExecutionContext)
+          actorConfig = ActorConfig.Basic(ec = myTestSingleThreadExecutionContext)
         ),
       threadStateCache =
         ThreadStateCache.Limit(
@@ -188,8 +188,8 @@ object ConfiguringLevels extends App {
       cacheKeyValueIds = true
     ).get
 
+
+  //test the database
   db.put(1, "one")
-
-  println(db.get(1))
-
+  assert(db.get(1).contains("one"))
 }

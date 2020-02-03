@@ -130,7 +130,7 @@ object ConfiguringLevels extends App {
             ioStrategy = ioAction => IOStrategy.SynchronisedIO(cacheOnAccess = true),
             compression = _ => Seq.empty
           ),
-        segment =
+        segmentConfig =
           SegmentConfig(
             cacheSegmentBlocksOnCreate = true,
             deleteSegmentsEventually = true,
@@ -155,7 +155,7 @@ object ConfiguringLevels extends App {
           ),
         compactionExecutionContext = CompactionExecutionContext.Shared,
         throttle =
-          levelMeter => {
+          (levelMeter: LevelMeter) => {
             val delay = (5 - levelMeter.segmentsCount).seconds
             val batch = levelMeter.segmentsCount min 5
             Throttle(delay, batch)

@@ -25,7 +25,7 @@ object PartialKeyExample extends App {
         override def compare(x: Key, y: Key): Int =
           x.id compare y.id
 
-        override def indexableKey(data: Key): Key =
+        override def comparableKey(data: Key): Key =
           data.copy(userName = None)
       }
     )

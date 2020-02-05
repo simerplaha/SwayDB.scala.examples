@@ -105,7 +105,6 @@ class StockOrderingSpec extends TestBase {
     db
       .stream
       .foreach(println)
-      .materialize
       .get
   }
 

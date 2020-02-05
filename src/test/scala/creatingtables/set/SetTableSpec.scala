@@ -53,7 +53,6 @@ class SetTableSpec extends TestBase {
         row =>
           println("Time log: " + row)
       }
-      .materialize
 
     //iterating Users
     db
@@ -64,6 +63,5 @@ class SetTableSpec extends TestBase {
         row =>
           println("User: " + row)
       }
-      .materialize
   }
 }

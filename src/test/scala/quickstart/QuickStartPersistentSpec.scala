@@ -62,6 +62,6 @@ class QuickStartPersistentSpec extends TestBase {
       .from(10)
       .stream
       .takeWhile(_._1 <= 90)
-      .foreach(_._2 should endWith("_updated")).materialize.get
+      .foreach(_._2 should endWith("_updated")).get
   }
 }

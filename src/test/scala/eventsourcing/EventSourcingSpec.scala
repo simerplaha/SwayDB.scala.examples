@@ -66,7 +66,6 @@ class EventSourcingSpec extends TestBase {
 
     db
       .printAll
-      .materialize
 
     //re-build user aggregates
     (1 to 10) foreach {
@@ -78,7 +77,6 @@ class EventSourcingSpec extends TestBase {
 
     db
       .iterateDB
-      .materialize
   }
 
 }

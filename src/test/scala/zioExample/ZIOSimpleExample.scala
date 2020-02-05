@@ -46,7 +46,7 @@ class ZIOSimpleExample extends TestBase {
         .flatMap {
           _ =>
             //print all key-values
-            map.stream.foreach(println).materialize
+            map.stream.foreach(println)
         }
         .flatMap {
           _ =>

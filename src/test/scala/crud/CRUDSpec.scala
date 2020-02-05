@@ -76,7 +76,7 @@ class CRUDSpec extends TestBase {
       .foreach {
         case (key, value) =>
           value should endWith("value updated")
-      }.materialize
+      }
 
     //DELETE
     db

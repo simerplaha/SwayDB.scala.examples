@@ -56,5 +56,4 @@ object QuickStart extends App {
   map
     .stream
     .foreach(println)
-    .materialize
 }

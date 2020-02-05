@@ -47,7 +47,6 @@ class TableSpec extends TestBase {
       .stream
       .takeWhile(_._1.table == TimeLogTable)
       .foreach(println)
-      .materialize
 
     //iterating User keys
     db
@@ -55,6 +54,5 @@ class TableSpec extends TestBase {
       .stream
       .takeWhile(_._1.table == UserTable)
       .foreach(println)
-      .materialize
   }
 }

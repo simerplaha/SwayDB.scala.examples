@@ -8,7 +8,7 @@ resolvers += Opts.resolver.sonatypeSnapshots
 resolvers += Opts.resolver.sonatypeReleases
 resolvers += Opts.resolver.sonatypeStaging
 
-val swayDBVersion = "0.12.4"
+val swayDBVersion = "0.12.5"
 
 libraryDependencies ++=
   Seq(

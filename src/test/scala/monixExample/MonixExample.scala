@@ -31,10 +31,11 @@ class MonixExample extends TestBase {
     implicit val scheduler = monix.execution.Scheduler.global
     import swaydb.monix.Bag._ //import monix tag to support Task.
 
-    val map = swaydb.memory.Map[UserKeys, UserValues, UserFunctions, Task]().get //Create a memory database
+    //functions should always be registered before database startup.
+    implicit val functions = swaydb.Map.Functions[UserKeys, UserValues, UserFunctions]()
+    functions.register(UserFunctions.ExpireUserFunction)
 
-    //functions should always be registered on database startup.
-    map.registerFunction(UserFunctions.ExpireUserFunction).awaitTask
+    val map = swaydb.memory.Map[UserKeys, UserValues, UserFunctions, Task]().get //Create a memory database
 
     val userName = UserKeys.UserName("iron_man")
     val activeUser = UserValues.ActiveUser(name = "Tony Stark", email = "tony@stark.com", lastLogin = System.nanoTime())

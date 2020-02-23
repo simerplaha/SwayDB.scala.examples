@@ -28,11 +28,6 @@ import scala.collection.parallel.CollectionConverters._
 class LikesSpec extends TestBase {
 
   "increment likes count" in {
-
-    val likesMap = memory.Map[String, Int, PureFunction[String, Int, Apply.Map[Int]], IO.ApiIO]().get //create likes database map.
-
-    likesMap.put(key = "SwayDB", value = 0) //initial entry with 0 likes.
-
     //function that increments likes by 1
     //in SQL this would be "UPDATE LIKES_TABLE SET LIKES = LIKES + 1"
 
@@ -40,8 +35,11 @@ class LikesSpec extends TestBase {
       (currentLikes: Int) =>
         Apply.Update(currentLikes + 1)
 
-    //register the above likes function
-    likesMap.registerFunction(incrementLikes)
+    implicit val functions = Map.Functions[String, Int, PureFunction[String, Int, Apply.Map[Int]]](incrementLikes)
+
+    val likesMap = memory.Map[String, Int, PureFunction[String, Int, Apply.Map[Int]], IO.ApiIO]().get //create likes database map.
+
+    likesMap.put(key = "SwayDB", value = 0) //initial entry with 0 likes.
 
     //concurrently apply 100 likes to key SwayDB using the above registered function's functionId.
     (1 to 100).par foreach {

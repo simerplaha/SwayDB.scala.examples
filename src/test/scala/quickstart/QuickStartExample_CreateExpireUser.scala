@@ -7,10 +7,11 @@ object QuickStartExample_CreateExpireUser extends App {
   import base.UserTable._
   import swaydb._
 
-  val map = memory.Map[UserKeys, UserValues, UserTable.UserFunctions, IO.ApiIO]().get //Create a memory database
-
   //functions should always be registered on database startup.
-  map.registerFunction(UserTable.UserFunctions.ExpireUserFunction)
+  implicit val functions = Map.Functions[UserKeys, UserValues, UserTable.UserFunctions]()
+  functions.register(UserTable.UserFunctions.ExpireUserFunction)
+
+  val map = memory.Map[UserKeys, UserValues, UserTable.UserFunctions, IO.ApiIO]().get //Create a memory database
 
   map.put(
     key = UserKeys.UserName("iron_man"),

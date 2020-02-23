@@ -9,9 +9,26 @@ object QuickStart extends App {
 
   implicit val bag = Bag.less
 
+  //create a function that reads key & value and applies modifications.
+  val function: PureFunction.OnKeyValue[Int, String, Apply.Map[String]] =
+    (key: Int, value: String, deadline: Option[Deadline]) =>
+      //some random logic demoing all Apply types.
+      if (key < 25)
+        Apply.Remove //remove if key is less than 25
+      else if (key < 50)
+        Apply.Expire(2.seconds) //expire after 2 seconds if key is less than 50
+      else if (key < 75)
+        Apply.Update(value + " and then updated from function", deadline.map(_ + 10.seconds)) //update value and increment deadline by 10.seconds if key is < 75.
+      else //or else do nothing
+        Apply.Nothing
+
   type FunctionType = PureFunction[Int, String, Apply.Map[String]] //create the type of Function that can be registered in this Map.
 
-  val map = memory.Map[Int, String, FunctionType, Bag.Less]().get //Create a memory database
+  //register the function
+  implicit val functions = swaydb.Map.Functions[Int, String, FunctionType](function)
+
+  //Create a memory database
+  val map = memory.Map[Int, String, FunctionType, Bag.Less]().get
 
   map.put(key = 1, value = "one")
   map.get(key = 1).get //returns "one"
@@ -34,20 +51,6 @@ object QuickStart extends App {
 
   //submit the stream to update the key-values as a single transaction.
   map.put(updatedValuesStream)
-
-  //create a function that reads key & value and applies modifications.
-  val function: PureFunction.OnKeyValue[Int, String, Apply.Map[String]] =
-    (key: Int, value: String, deadline: Option[Deadline]) =>
-      if (key < 25) //remove if key is less than 25
-        Apply.Remove
-      else if (key < 50) //expire after 2 seconds if key is less than 50
-        Apply.Expire(2.seconds)
-      else if (key < 75) //update value and increment deadline by 10.seconds if key is < 75.
-        Apply.Update(value + " and then updated from function", deadline.map(_ + 10.seconds))
-      else
-        Apply.Nothing //or else do nothing
-
-  map.registerFunction(function) //register the function
 
   //apply the function to all key-values ranging 1 to 100.
   map.applyFunction(from = 1, to = 100, function = function)

@@ -45,6 +45,7 @@ class QuickStartMemorySpec extends TestBase {
 
     //write 100 key-values
     (1 to 100) foreach { i => db.put(key = i, value = i.toString).get }
+
     //Iteration: fetch all key-values withing range 10 to 90, update values and batch write updated key-values
     db
       .from(10)
@@ -57,6 +58,7 @@ class QuickStartMemorySpec extends TestBase {
       .materialize
       .flatMap(db.put)
       .get
+
     //assert the key-values were updated
     db
       .from(10)

@@ -137,7 +137,7 @@ object ConfiguringLevels extends App {
             pushForward = true,
             mmap = MMAP.Disabled,
             minSegmentSize = 4.mb,
-            maxKeyValuesPerSegmentGroup = 100000,
+            maxKeyValuesPerSegment = 100000,
             ioStrategy = {
               case IOAction.OpenResource => IOStrategy.SynchronisedIO(cacheOnAccess = true)
               case IOAction.ReadDataOverview => IOStrategy.SynchronisedIO(cacheOnAccess = true)

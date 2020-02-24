@@ -1,4 +1,4 @@
-package queue
+package quickstart
 
 import scala.concurrent.duration._
 

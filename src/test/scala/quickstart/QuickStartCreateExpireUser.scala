@@ -2,7 +2,7 @@ package quickstart
 
 import base.UserTable
 
-object QuickStartExample_CreateExpireUser extends App {
+object QuickStartCreateExpireUser extends App {
 
   import base.UserTable._
   import swaydb._

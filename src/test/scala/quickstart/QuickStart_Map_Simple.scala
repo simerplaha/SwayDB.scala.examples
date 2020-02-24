@@ -2,7 +2,7 @@ package quickstart
 
 import scala.concurrent.duration._
 
-object QuickStart_Map extends App {
+object QuickStart_Map_Simple extends App {
 
   import swaydb._
   import swaydb.serializers.Default._ //import default serializers

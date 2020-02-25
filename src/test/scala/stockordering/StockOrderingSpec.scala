@@ -65,15 +65,11 @@ class StockOrderingSpec extends TestBase {
 
     import scala.math.Ordered.orderingToOrdered
 
-    //build a typed key-order
-    val typedStockOrdering: Ordering[StockOrder] =
+    //typed key-order
+    implicit val typedStockOrdering: KeyOrder[StockOrder] =
       (order1: StockOrder, order2: StockOrder) =>
         (order1.stockCode, order1.purchaseTime, order1.orderId) compare
           (order2.stockCode, order2.purchaseTime, order2.orderId)
-
-    //provide keyOrder to SwayDB. Use Either.Left for untyped and Right for typed.
-    implicit val keyOrder: Either[KeyOrder[Slice[Byte]], KeyOrder[StockOrder]] =
-      Right(KeyOrder(typedStockOrdering))
 
     val db = persistent.Set[StockOrder, Nothing, IO.ApiIO](dir = dir.resolve("stockOrdersDB")).get
 
@@ -81,11 +77,11 @@ class StockOrderingSpec extends TestBase {
     Random.shuffle(1 to 15).foreach {
       i: Int =>
         if (i <= 5) //it's Apple
-          db add StockOrder(i, i, System.currentTimeMillis(), "AAPL")
+        db add StockOrder(i, i, System.currentTimeMillis(), "AAPL")
         else if (i <= 10) //it's Google
-          db add StockOrder(i, i, System.currentTimeMillis(), "GOOGL")
+        db add StockOrder(i, i, System.currentTimeMillis(), "GOOGL")
         else //it's Tesla
-          db add StockOrder(i, i, System.currentTimeMillis(), "TSLA")
+        db add StockOrder(i, i, System.currentTimeMillis(), "TSLA")
     }
 
     val expected =

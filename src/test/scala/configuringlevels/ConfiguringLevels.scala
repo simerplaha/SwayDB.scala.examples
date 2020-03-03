@@ -87,7 +87,7 @@ object ConfiguringLevels extends App {
       )
       .addPersistentLevel( //level2
         dir = dir.resolve("level2"),
-        otherDirs = Seq(dir.resolve("level2-1"), dir.resolve("level2-3")),
+        otherDirs = Seq(Dir("/Disk2", 1), Dir("/Disk3", 3)),
         mmapAppendix = true,
         appendixFlushCheckpointSize = 4.mb,
         sortedKeyIndex =
@@ -187,7 +187,6 @@ object ConfiguringLevels extends App {
         ),
       cacheKeyValueIds = true
     ).get
-
 
   //test the database
   db.put(1, "one")

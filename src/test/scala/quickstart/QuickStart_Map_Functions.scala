@@ -10,17 +10,19 @@ object QuickStart_Map_Functions extends App {
   implicit val bag = Bag.less
 
   //create a function that reads key & value and applies modifications.
-  val function: PureFunction.OnKeyValue[Int, String, Apply.Map[String]] =
-    (key: Int, value: String, deadline: Option[Deadline]) =>
+  val function =
+    new PureFunction.OnKeyValue[Int, String, Apply.Map[String]] {
+      override def apply(key: Int, value: String, deadline: Option[Deadline]): Apply.Map[String] =
       //some random logic demoing all Apply types.
-      if (key < 25)
-        Apply.Remove //remove if key is less than 25
-      else if (key < 50)
-        Apply.Expire(2.seconds) //expire after 2 seconds if key is less than 50
-      else if (key < 75)
-        Apply.Update(value + " and then updated from function", deadline.map(_ + 10.seconds)) //update value and increment deadline by 10.seconds if key is < 75.
-      else //or else do nothing
+        if (key < 25)
+          Apply.Remove //remove if key is less than 25
+        else if (key < 50)
+          Apply.Expire(2.seconds) //expire after 2 seconds if key is less than 50
+        else if (key < 75)
+          Apply.Update(value + " and then updated from function", deadline.map(_ + 10.seconds)) //update value and increment deadline by 10.seconds if key is < 75.
+        else //or else do nothing
         Apply.Nothing
+    }
 
   type FunctionType = PureFunction[Int, String, Apply.Map[String]] //create the type of Function that can be registered in this Map.
 

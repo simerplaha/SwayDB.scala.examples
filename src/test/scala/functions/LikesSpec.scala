@@ -31,9 +31,11 @@ class LikesSpec extends TestBase {
     //function that increments likes by 1
     //in SQL this would be "UPDATE LIKES_TABLE SET LIKES = LIKES + 1"
 
-    val incrementLikes: PureFunction.OnValue[Int, Apply.Map[Int]] =
-      (currentLikes: Int) =>
-        Apply.Update(currentLikes + 1)
+    val incrementLikes =
+      new PureFunction.OnValue[Int, Apply.Map[Int]] {
+        override def apply(currentLikes: Int): Apply.Map[Int] =
+          Apply.Update(currentLikes + 1)
+      }
 
     implicit val functions = Map.Functions[String, Int, PureFunction[String, Int, Apply.Map[Int]]](incrementLikes)
 

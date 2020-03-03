@@ -66,10 +66,12 @@ class StockOrderingSpec extends TestBase {
     import scala.math.Ordered.orderingToOrdered
 
     //typed key-order
-    implicit val typedStockOrdering: KeyOrder[StockOrder] =
-      (order1: StockOrder, order2: StockOrder) =>
-        (order1.stockCode, order1.purchaseTime, order1.orderId) compare
-          (order2.stockCode, order2.purchaseTime, order2.orderId)
+    implicit val typedStockOrdering =
+      new KeyOrder[StockOrder] {
+        override def compare(order1: StockOrder, order2: StockOrder): Int =
+          (order1.stockCode, order1.purchaseTime, order1.orderId) compare
+            (order2.stockCode, order2.purchaseTime, order2.orderId)
+      }
 
     val db = persistent.Set[StockOrder, Nothing, IO.ApiIO](dir = dir.resolve("stockOrdersDB")).get
 

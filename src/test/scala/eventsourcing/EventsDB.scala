@@ -34,16 +34,17 @@ class EventsDB(dir: Path) {
 
   import swaydb._
 
-  implicit val bag = Bag.apiIO
+  implicit val bag = Bag.less
+  implicit def unwrap[A](less: Bag.Less[A]): A = less
 
-  private val db = persistent.Set[Event, Nothing, IO.ApiIO](dir).get
+  private val db = persistent.Set[Event, Nothing, Bag.Less](dir).get
 
   private val seqNumberGenerator = new AtomicLong(1)
 
   /**
     * Persists partial Event that inputs the next event sequence number and returns an [[Event]].
     */
-  def writeEvent(event: Long => Event): IO.ApiIO[OK] = {
+  def writeEvent(event: Long => Event): OK = {
     //initialise the Event with the next Sequence number.
     event(seqNumberGenerator.getAndIncrement()) match {
       case event @ UserCreated(persistentId, _, _) =>
@@ -80,7 +81,7 @@ class EventsDB(dir: Path) {
             case UserDeleted(_, _) =>
               userState.map(_.copy(isDeleted = true))
           }
-      }.toTry.get
+      }
 
   //print all Event. This gives a actual view of how the Events are organised in the database
   def printAll =

@@ -40,7 +40,7 @@ class EventSourcingSpec extends TestBase {
             createTime = LocalDateTime.now(),
             name = randomCharacters()
           )
-        ).get
+        )
     }
     //update names of all 10 Users
     (1 to 10) foreach {
@@ -51,7 +51,7 @@ class EventSourcingSpec extends TestBase {
             createTime = LocalDateTime.now(),
             name = "name updated"
           )
-        ).get
+        )
     }
     //delete all 10 Users
     (1 to 10) foreach {
@@ -61,7 +61,7 @@ class EventSourcingSpec extends TestBase {
             persistentId = userId,
             createTime = LocalDateTime.now()
           )
-        ).get
+        )
     }
 
     db

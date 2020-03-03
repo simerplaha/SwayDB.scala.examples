@@ -8,7 +8,7 @@ resolvers += Opts.resolver.sonatypeSnapshots
 resolvers += Opts.resolver.sonatypeReleases
 resolvers += Opts.resolver.sonatypeStaging
 
-val swayDBVersion = "0.13.1"
+val swayDBVersion = "0.13.2"
 
 libraryDependencies ++=
   Seq(
@@ -21,6 +21,7 @@ libraryDependencies ++=
     "org.junit.jupiter" % "junit-jupiter-api" % "5.5.2" % Test,
     "org.scala-lang.modules" %% "scala-parallel-collections" % "0.2.0",
     "io.swaydb" %% "swaydb" % swayDBVersion,
+    "io.swaydb" %% "java" % swayDBVersion,
     "io.swaydb" %% "monix" % swayDBVersion,
     "io.swaydb" %% "zio" % swayDBVersion
   )

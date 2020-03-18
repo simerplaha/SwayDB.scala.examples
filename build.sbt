@@ -4,7 +4,7 @@ val swayDBVersion = "0.13.3"
 val scala212 = "2.12.11"
 val scala213 = "2.13.1"
 
-name := "SwayDB.examples"
+name := "SwayDB.scala.examples"
 
 version := "0.1"
 

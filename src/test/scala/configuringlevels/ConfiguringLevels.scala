@@ -52,7 +52,7 @@ object ConfiguringLevels extends App {
 
   val config =
     ConfigWizard
-      .addPersistentLevel0( //level0
+      .withPersistentLevel0( //level0
         dir = dir.resolve("level0"),
         mapSize = 4.mb,
         mmap = true,
@@ -72,7 +72,7 @@ object ConfiguringLevels extends App {
               30.seconds
           }
       )
-      .addMemoryLevel1( //level1
+      .withMemoryLevel1( //level1
         minSegmentSize = 4.mb,
         maxKeyValuesPerSegment = 100000,
         copyForward = false,
@@ -85,7 +85,7 @@ object ConfiguringLevels extends App {
             else
               Throttle(pushDelay = Duration.Zero, segmentsToPush = 0)
       )
-      .addPersistentLevel( //level2
+      .withPersistentLevel( //level2
         dir = dir.resolve("level2"),
         otherDirs = Seq(Dir("/Disk2", 1), Dir("/Disk3", 3)),
         mmapAppendix = true,
@@ -161,7 +161,7 @@ object ConfiguringLevels extends App {
             Throttle(delay, batch)
           }
       )
-      .addTrashLevel //level3
+      .withTrashLevel //level3
 
   implicit val ordering = KeyOrder.default //import default sorting
 

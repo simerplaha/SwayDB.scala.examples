@@ -1,25 +1,7 @@
-/*
- * Copyright (C) 2018 Simer Plaha (@simerplaha)
- *
- * This file is a part of SwayDB.
- *
- * SwayDB is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * SwayDB is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with SwayDB. If not, see <https://www.gnu.org/licenses/>.
- */
-
 package quickstart
 
 import base.TestBase
+import swaydb.data.config.{BinarySearchIndex, IOStrategy, IndexFormat}
 
 class QuickStartPersistentSpec extends TestBase {
 
@@ -31,7 +13,11 @@ class QuickStartPersistentSpec extends TestBase {
     implicit val bag = Bag.apiIO
 
     //Create a persistent database. If the directories do not exist, they will be created.
-    val db = persistent.Map[Int, String, Nothing, IO.ApiIO](dir = dir.resolve("disk1")).get
+    val db = persistent.Map[Int, String, Nothing, IO.ApiIO](
+      dir = dir.resolve("disk1"),
+      appendixFlushCheckpointSize = 2.mb,
+      binarySearchIndex = BinarySearchIndex.Disable(searchSortedIndexDirectly = true)
+    ).get
 
     db.put(1, "one").get
     db.get(1).get should contain("one")

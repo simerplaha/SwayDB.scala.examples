@@ -34,6 +34,7 @@ libraryDependencies ++=
     "io.circe" %% "circe-generic" % "0.12.0-M3" % Test,
     "io.circe" %% "circe-parser" % "0.12.0-M3" % Test,
     "org.junit.jupiter" % "junit-jupiter-api" % "5.5.2" % Test,
+    "joda-time" % "joda-time" % "2.10.5" % Test,
     "io.swaydb" %% "swaydb" % swayDBVersion,
     "io.swaydb" %% "java" % swayDBVersion,
     "io.swaydb" %% "monix" % swayDBVersion,

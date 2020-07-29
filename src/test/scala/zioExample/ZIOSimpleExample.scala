@@ -1,7 +1,8 @@
 package zioExample
 
 import base.TestBase
-import zio.{DefaultRuntime, Task}
+import zio.Task
+import zio.Runtime
 import swaydb.serializers.Default._
 
 import scala.util.Random
@@ -9,10 +10,10 @@ import scala.util.Random
 class ZIOSimpleExample extends TestBase {
 
   "Simple ZIO example without functions" in {
-    implicit val runtime = new DefaultRuntime {}
+    implicit val runtime = Runtime.default
     import swaydb.zio.Bag._ //provide monix tag to support Task.
     //Create a memory database without functions support (F: Nothing). See MonixExample.scala for an example with function.
-    val map = swaydb.memory.Map[Int, String, Nothing, Task]().get
+    val map = swaydb.memory.Map[Int, String, Nothing, Task]().awaitTask
 
     //create some random key-values
     val keyValues =

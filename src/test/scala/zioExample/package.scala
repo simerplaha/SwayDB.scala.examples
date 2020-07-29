@@ -1,11 +1,9 @@
-import zio.{DefaultRuntime, Runtime, Task}
+import zio.{Runtime, Task}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.{FiniteDuration, _}
 
 package object zioExample {
-
-  val runtime = new DefaultRuntime {}
 
   implicit class TaskAwait[T](task: Task[T]) {
 

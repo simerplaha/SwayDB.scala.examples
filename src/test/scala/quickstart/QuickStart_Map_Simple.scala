@@ -10,7 +10,7 @@ object QuickStart_Map_Simple extends App {
   implicit val bag = Bag.less
 
   //Create a memory database
-  val map = memory.Map[Int, String, Nothing, Bag.Less]().get
+  val map = memory.Map[Int, String, Nothing, Bag.Less]()
 
   map.put(key = 1, value = "one")
   map.get(key = 1).get //returns "one"

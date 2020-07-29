@@ -18,7 +18,7 @@ class EventsDB(dir: Path) {
   implicit val bag = Bag.less
   implicit def unwrap[A](less: Bag.Less[A]): A = less
 
-  private val db = persistent.Set[Event, Nothing, Bag.Less](dir).get
+  private val db = persistent.Set[Event, Nothing, Bag.Less](dir)
 
   private val seqNumberGenerator = new AtomicLong(1)
 

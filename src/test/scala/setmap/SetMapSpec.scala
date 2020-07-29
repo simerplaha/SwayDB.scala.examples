@@ -9,7 +9,7 @@ class SetMapSpec extends WordSpec with Matchers {
   import swaydb.serializers.Default._
 
   "example" in {
-    val map = memory.SetMap[Int, String, Nothing, Bag.Less]().get
+    val map = memory.SetMap[Int, String, Nothing, Bag.Less]()
 
     map.put(1, "one")
     map.get(1).value shouldBe "one"

@@ -28,7 +28,7 @@ object QuickStart_Map_Functions extends App {
   implicit val functions = swaydb.Map.Functions[Int, String, FunctionType](function)
 
   //Create a memory database
-  val map = memory.Map[Int, String, FunctionType, Bag.Less]().get
+  val map = memory.Map[Int, String, FunctionType, Bag.Less]()
 
   map.put(key = 1, value = "one")
   map.get(key = 1).get //returns "one"

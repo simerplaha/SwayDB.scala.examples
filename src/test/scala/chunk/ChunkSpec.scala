@@ -12,7 +12,7 @@ class ChunkSpec extends TestBase {
 
     implicit val bag = Bag.less
 
-    val db = persistent.Map[Int, Slice[Byte], Nothing, Bag.Less](dir = dir).get
+    val db = persistent.Map[Int, Slice[Byte], Nothing, Bag.Less](dir = dir)
 
     val file: Array[Byte] = randomBytes(3.mb) //a 3.mb byte array
 

@@ -16,7 +16,7 @@ class MonixExample extends TestBase {
     implicit val functions = swaydb.Map.Functions[UserKeys, UserValues, UserFunctions]()
     functions.register(UserFunctions.ExpireUserFunction)
 
-    val map = swaydb.memory.Map[UserKeys, UserValues, UserFunctions, Task]().get //Create a memory database
+    val map = swaydb.memory.Map[UserKeys, UserValues, UserFunctions, Task]().awaitTask //Create a memory database
 
     val userName = UserKeys.UserName("iron_man")
     val activeUser = UserValues.ActiveUser(name = "Tony Stark", email = "tony@stark.com", lastLogin = System.nanoTime())

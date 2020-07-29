@@ -76,7 +76,7 @@ class CRUDSpec extends TestBase {
 
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        persistent.Map[Int, String, Nothing, Bag.Less](dir.resolve("persistentDB")).get
+        persistent.Map[Int, String, Nothing, Bag.Less](dir.resolve("persistentDB"))
       }
     }
   }
@@ -84,7 +84,7 @@ class CRUDSpec extends TestBase {
   "A memory database" should {
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        memory.Map[Int, String, Nothing, Bag.Less]().get
+        memory.Map[Int, String, Nothing, Bag.Less]()
       }
     }
   }
@@ -92,7 +92,7 @@ class CRUDSpec extends TestBase {
   "A memory-persistent database" should {
     "perform Create, read (forward & reverse), update & delete (CRUD) on 100,000 key-values" in {
       assertCRUD(keyValueCount) {
-        eventually.persistent.Map[Int, String, Nothing, Bag.Less](dir.resolve("memoryPersistentDB")).get
+        eventually.persistent.Map[Int, String, Nothing, Bag.Less](dir.resolve("memoryPersistentDB"))
       }
     }
   }

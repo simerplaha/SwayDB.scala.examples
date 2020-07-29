@@ -7,7 +7,7 @@ object QuickStart_Queue extends App {
   import swaydb._
   import swaydb.serializers.Default._
 
-  val queue = memory.Queue[Int]().get
+  val queue = memory.Queue[Int, Bag.Less]()
 
   queue.push(elem = 1)
   queue.push(elem = 2, expireAfter = 0.millisecond) //expire now

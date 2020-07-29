@@ -13,7 +13,7 @@ class MonixSimpleExample extends TestBase {
     import swaydb.monix.Bag._ //provide monix tag to support Task.
 
     //Create a memory database without functions support (F: Nothing). See MonixExample.scala for an example with function.
-    val map = swaydb.memory.Map[Int, String, Nothing, Task]().get
+    val map = swaydb.memory.Map[Int, String, Nothing, Task]().awaitTask
 
     //create some random key-values
     val keyValues =

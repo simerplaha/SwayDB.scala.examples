@@ -47,8 +47,10 @@ class StreamSpec extends WordSpec with Matchers {
   }
 
   "stream ZIO Task" in {
-    import zio.{DefaultRuntime, Task}
-    implicit val runtime = new DefaultRuntime {}
+    import zio.Task
+    import zio.Runtime
+
+    implicit val runtime = Runtime.default
     import swaydb.zio.Bag._ //import zio tag to support Task.
 
     val sum: Task[Int] = stream.foldLeft(0)(_ + _)

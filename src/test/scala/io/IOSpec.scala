@@ -4,7 +4,7 @@ import java.rmi.RemoteException
 
 import org.scalatest.{Matchers, WordSpec}
 import swaydb.IO
-import zio.DefaultRuntime
+import zio.Runtime
 
 class IOSpec extends WordSpec with Matchers {
 
@@ -103,7 +103,7 @@ class IOSpec extends WordSpec with Matchers {
     val defer = IO.Defer("do something here")
 
     //import Bag and scheduler for ZIO.
-    implicit val runtime = new DefaultRuntime {}
+    implicit val runtime = Runtime.default
     import swaydb.zio.Bag._ //import zio tag to support Task.
 
     //defer can now be executed under monix

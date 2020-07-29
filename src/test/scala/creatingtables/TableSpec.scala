@@ -11,7 +11,7 @@ class TableSpec extends TestBase {
     import swaydb._
     implicit val bag = Bag.less
 
-    val db = persistent.Map[PrimaryKey, Row, Nothing, Bag.Less](dir = dir).get
+    val db = persistent.Map[PrimaryKey, Row, Nothing, Bag.Less](dir = dir)
 
     //write key-values to each Table
     (1 to 10) foreach {

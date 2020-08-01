@@ -1,4 +1,4 @@
-val swayDBVersion = "0.14.1"
+val swayDBVersion = "0.14.2"
 
 //val scala211 = "2.11.12" //for 2.11 see branch scala_2.11
 val scala212 = "2.12.11"
@@ -24,6 +24,9 @@ def scalaParallelCollections(scalaVersion: String) =
     case _ =>
       None
   }
+
+val AkkaVersion = "2.6.8"
+libraryDependencies += "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion
 
 libraryDependencies ++=
   Seq(

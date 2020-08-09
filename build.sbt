@@ -1,4 +1,4 @@
-val swayDBVersion = "0.14.2"
+val swayDBVersion = "0.14.3"
 
 //val scala211 = "2.11.12" //for 2.11 see branch scala_2.11
 val scala212 = "2.12.11"
@@ -39,7 +39,7 @@ libraryDependencies ++=
     "org.junit.jupiter" % "junit-jupiter-api" % "5.5.2" % Test,
     "joda-time" % "joda-time" % "2.10.5" % Test,
     "io.swaydb" %% "swaydb" % swayDBVersion,
-    "io.swaydb" %% "java" % swayDBVersion,
+    "io.swaydb" % "java" % swayDBVersion,
     "io.swaydb" %% "monix" % swayDBVersion,
     "io.swaydb" %% "zio" % swayDBVersion
   ) ++ scalaParallelCollections(scalaVersion.value)

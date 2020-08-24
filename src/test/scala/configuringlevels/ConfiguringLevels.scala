@@ -7,8 +7,10 @@ import swaydb.configs.level.SingleThreadFactory
 import swaydb.data.accelerate.{Accelerator, LevelZeroMeter}
 import swaydb.data.compaction.{CompactionExecutionContext, LevelMeter, Throttle}
 import swaydb.data.compression.{LZ4Compressor, LZ4Decompressor, LZ4Instance}
+import swaydb.data.config.IOAction
 import swaydb.data.config.{ConfigWizard, MMAP, RecoveryMode, _}
 import swaydb.data.order.KeyOrder
+import swaydb.data.util.OperatingSystem
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -36,7 +38,7 @@ object ConfiguringLevels extends App {
       .withPersistentLevel0( //level0
         dir = dir.resolve("level0"),
         mapSize = 4.mb,
-        mmap = true,
+        mmap = MMAP.Enabled(OperatingSystem.isWindows),
         compactionExecutionContext = CompactionExecutionContext.Create(myTestSingleThreadExecutionContext),
         recoveryMode = RecoveryMode.ReportFailure,
         acceleration =
@@ -69,13 +71,13 @@ object ConfiguringLevels extends App {
       .withPersistentLevel( //level2
         dir = dir.resolve("level2"),
         otherDirs = Seq(Dir("/Disk2", 1), Dir("/Disk3", 3)),
-        mmapAppendix = true,
+        mmapAppendix = MMAP.Enabled(OperatingSystem.isWindows),
         appendixFlushCheckpointSize = 4.mb,
         sortedKeyIndex =
           SortedKeyIndex.Enable(
             prefixCompression = PrefixCompression.Disable(normaliseIndexForBinarySearch = true),
             enablePositionIndex = true,
-            ioStrategy = ioAction => IOStrategy.SynchronisedIO(cacheOnAccess = true),
+            blockIOStrategy = ioAction => IOStrategy.SynchronisedIO(cacheOnAccess = true),
             compressions = _ => Seq.empty
           ),
         randomKeyIndex =
@@ -85,7 +87,7 @@ object ConfiguringLevels extends App {
             minimumNumberOfHits = 2,
             indexFormat = IndexFormat.CopyKey,
             allocateSpace = _.requiredSpace,
-            ioStrategy = ioAction => IOStrategy.SynchronisedIO(cacheOnAccess = true),
+            blockIOStrategy = ioAction => IOStrategy.SynchronisedIO(cacheOnAccess = true),
             compression = _ => Seq.empty
           ),
         binarySearchIndex =
@@ -93,7 +95,7 @@ object ConfiguringLevels extends App {
             minimumNumberOfKeys = 10,
             searchSortedIndexDirectly = true,
             indexFormat = IndexFormat.CopyKey,
-            ioStrategy = ioAction => IOStrategy.SynchronisedIO(cacheOnAccess = true),
+            blockIOStrategy = ioAction => IOStrategy.SynchronisedIO(cacheOnAccess = true),
             compression = _ => Seq.empty
           ),
         mightContainKeyIndex =
@@ -101,14 +103,14 @@ object ConfiguringLevels extends App {
             falsePositiveRate = 0.01,
             minimumNumberOfKeys = 10,
             updateMaxProbe = optimalMaxProbe => 1,
-            ioStrategy = ioAction => IOStrategy.SynchronisedIO(cacheOnAccess = true),
+            blockIOStrategy = ioAction => IOStrategy.SynchronisedIO(cacheOnAccess = true),
             compression = _ => Seq.empty
           ),
         valuesConfig =
           ValuesConfig(
             compressDuplicateValues = true,
             compressDuplicateRangeValues = true,
-            ioStrategy = ioAction => IOStrategy.SynchronisedIO(cacheOnAccess = true),
+            blockIOStrategy = ioAction => IOStrategy.SynchronisedIO(cacheOnAccess = true),
             compression = _ => Seq.empty
           ),
         segmentConfig =
@@ -119,10 +121,13 @@ object ConfiguringLevels extends App {
             mmap = MMAP.Disabled,
             minSegmentSize = 4.mb,
             maxKeyValuesPerSegment = 100000,
-            ioStrategy = {
-              case IOAction.OpenResource => IOStrategy.SynchronisedIO(cacheOnAccess = true)
-              case IOAction.ReadDataOverview => IOStrategy.SynchronisedIO(cacheOnAccess = true)
-              case action: IOAction.DataAction => IOStrategy.SynchronisedIO(cacheOnAccess = action.isCompressed)
+            fileOpenIOStrategy = IOStrategy.SynchronisedIO(cacheOnAccess = true),
+            blockIOStrategy = {
+              case IOAction.ReadDataOverview =>
+                IOStrategy.SynchronisedIO(cacheOnAccess = true)
+
+              case action: IOAction.DecompressAction =>
+                IOStrategy.SynchronisedIO(cacheOnAccess = action.isCompressed)
             },
             compression = _ =>
               Seq(
@@ -152,21 +157,22 @@ object ConfiguringLevels extends App {
       fileCache =
         FileCache.Enable(
           maxOpen = 1000,
-          actorConfig = ActorConfig.Basic(ec = myTestSingleThreadExecutionContext)
+          actorConfig = ActorConfig.Basic(ec = myTestSingleThreadExecutionContext, name = "FileCache")
         ),
       memoryCache =
         MemoryCache.ByteCacheOnly(
           minIOSeekSize = 4098.bytes,
           skipBlockCacheSeekSize = 4098.bytes * 10,
           cacheCapacity = 1.gb,
-          actorConfig = ActorConfig.Basic(ec = myTestSingleThreadExecutionContext)
+          actorConfig = ActorConfig.Basic(ec = myTestSingleThreadExecutionContext, name = "MemoryCache")
         ),
       threadStateCache =
         ThreadStateCache.Limit(
           hashMapMaxSize = 100,
           maxProbe = 10
         ),
-      cacheKeyValueIds = true
+      cacheKeyValueIds = true,
+      shutdownTimeout = 10.seconds
     ).get
 
   //test the database

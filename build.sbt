@@ -1,4 +1,4 @@
-val swayDBVersion = "0.14.4"
+val swayDBVersion = "0.14.5"
 
 //val scala211 = "2.11.12" //for 2.11 see branch scala_2.11
 val scala212 = "2.12.11"

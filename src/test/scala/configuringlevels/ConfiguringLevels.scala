@@ -38,7 +38,7 @@ object ConfiguringLevels extends App {
       .withPersistentLevel0( //level0
         dir = dir.resolve("level0"),
         mapSize = 4.mb,
-        mmap = MMAP.Enabled(OperatingSystem.isWindows),
+        mmap = MMAP.Enabled(OperatingSystem.isWindows, ForceSave.Disabled),
         compactionExecutionContext = CompactionExecutionContext.Create(myTestSingleThreadExecutionContext),
         recoveryMode = RecoveryMode.ReportFailure,
         acceleration =
@@ -71,7 +71,7 @@ object ConfiguringLevels extends App {
       .withPersistentLevel( //level2
         dir = dir.resolve("level2"),
         otherDirs = Seq(Dir("/Disk2", 1), Dir("/Disk3", 3)),
-        mmapAppendix = MMAP.Enabled(OperatingSystem.isWindows),
+        mmapAppendix = MMAP.Enabled(OperatingSystem.isWindows, ForceSave.Disabled),
         appendixFlushCheckpointSize = 4.mb,
         sortedKeyIndex =
           SortedKeyIndex.Enable(
@@ -118,7 +118,7 @@ object ConfiguringLevels extends App {
             cacheSegmentBlocksOnCreate = true,
             deleteSegmentsEventually = true,
             pushForward = true,
-            mmap = MMAP.Disabled,
+            mmap = MMAP.Disabled(ForceSave.Disabled),
             minSegmentSize = 4.mb,
             maxKeyValuesPerSegment = 100000,
             fileOpenIOStrategy = IOStrategy.SynchronisedIO(cacheOnAccess = true),

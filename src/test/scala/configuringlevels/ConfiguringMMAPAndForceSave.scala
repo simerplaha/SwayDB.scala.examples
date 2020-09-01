@@ -7,18 +7,21 @@ import swaydb.data.util.OperatingSystem
 class ConfiguringMMAPAndForceSave extends WordSpec with Matchers {
 
   "Example configuration for MMAP and ForceSave" in {
-
+    /**
+     * For Java version of this test see
+     * https://github.com/simerplaha/SwayDB.java.examples/blob/master/src/main/java/configurations/ConfiguringMMAPAndForceSaveTest.java
+     */
     import swaydb._
     import swaydb.serializers.Default._
 
     val mmapEnabled =
       MMAP.Enabled(
-        //clean MMAP files only on windows
+        //delete after MMAP are cleaned only on Windows.
         deleteAfterClean = OperatingSystem.isWindows,
         forceSave =
           //enable force safe to run before cleaning MMAP files.
           ForceSave.BeforeClean(
-            enableBeforeCopy = false, //also apply forceSave before copying MMAP files
+            enableBeforeCopy = false, //disabled applying forceSave before copying MMAP files
             enableForReadOnlyMode = false, //disable forceSave for read-only MMAP files
             logBenchmark = true //log time take to execute force-save.
           )
@@ -43,7 +46,7 @@ class ConfiguringMMAPAndForceSave extends WordSpec with Matchers {
      */
     //disabled force save
     val disabledForceSave =
-      ForceSave.Disabled
+    ForceSave.Disabled
 
     //enables forceSave before clean
     val forceSaveBeforeClean =

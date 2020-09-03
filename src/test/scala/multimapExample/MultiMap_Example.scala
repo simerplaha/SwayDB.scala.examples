@@ -11,9 +11,9 @@ import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import scala.concurrent.duration._
 
 /**
- * [[swaydb.MultiMap_EAP]] is an extension of [[swaydb.Map]] which allows creating nested [[swaydb.MultiMap_EAP]] or tree like structure.
+ * [[swaydb.MultiMap_Experimental]] is an extension of [[swaydb.Map]] which allows creating nested [[swaydb.MultiMap_Experimental]] or tree like structure.
  *
- * [[swaydb.MultiMap_EAP.schema]] can be used to add nested map.
+ * [[swaydb.MultiMap_Experimental.schema]] can be used to add nested map.
  */
 class MultiMap_Example extends TestBase with Eventually {
 
@@ -24,7 +24,7 @@ class MultiMap_Example extends TestBase with Eventually {
     implicit val bag = Bag.less
 
     //Initialise in-memory MultiMap which returns the root map.
-    val root = memory.MultiMap_EAP[Table, PrimaryKey, TableRow, Nothing, Bag.Less]()
+    val root = memory.MultiMap_Experimental[Table, PrimaryKey, TableRow, Nothing, Bag.Less]()
 
     //create two child maps under root.
     val userTable = root.schema.init(mapKey = UserTable, keyType = classOf[UserPrimaryKey], valueType = classOf[UserRow])

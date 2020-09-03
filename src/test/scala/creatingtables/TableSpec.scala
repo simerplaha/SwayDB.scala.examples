@@ -24,15 +24,15 @@ class TableSpec extends TestBase {
 
     //iterating Task keys
     db
-      .from(TimeLogKey(1))
       .stream
+      .from(TimeLogKey(1))
       .takeWhile(_._1.table == TimeLogTable)
       .foreach(println)
 
     //iterating User keys
     db
-      .from(UserKey(1))
       .stream
+      .from(UserKey(1))
       .takeWhile(_._1.table == UserTable)
       .foreach(println)
   }

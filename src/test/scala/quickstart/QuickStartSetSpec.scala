@@ -29,8 +29,8 @@ class QuickStartSetSpec extends TestBase {
     (1 to 100) foreach { i => db.add(i).get }
     //Iteration: remove all items withing range 1 to 50 and batch add 50 new items ranging from 101 to 150
     db
-      .from(1)
       .stream
+      .from(1)
       .takeWhile(_ < 50)
       .materialize
       .flatMap(db.remove)

@@ -47,8 +47,8 @@ class EventsDB(dir: Path) {
   def buildUserAggregate(userId: Int): Option[UserState] =
     db
       //StartUserAggregate is only a pointer Event to the first Event of the aggregate. Use 'after' to get the first actual Event of the aggregate.
-      .after(StartUserAggregate(userId))
       .stream
+      .after(StartUserAggregate(userId))
       .takeWhile(_.persistentId == userId) //fetch Events for only this User
       .foldLeft(Option.empty[UserState]) { //and then build User's state.
         case (userState, event) =>

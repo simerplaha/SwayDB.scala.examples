@@ -23,8 +23,8 @@ object QuickStart_Map_Simple extends App {
   //Create a stream that updates all values within range 10 to 90.
   val updatedValuesStream =
     map
-      .from(10)
       .stream
+      .from(10)
       .takeWhile(_._1 <= 90)
       .map {
         case (key, value) =>

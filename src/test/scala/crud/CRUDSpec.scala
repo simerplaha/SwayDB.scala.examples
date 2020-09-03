@@ -32,8 +32,8 @@ class CRUDSpec extends TestBase {
 
     //READ REVERSE
     db
-      .reverse
       .stream
+      .reverse
       .foldLeft(keyValueCount) {
         case (size, (key, value)) =>
           key shouldBe size

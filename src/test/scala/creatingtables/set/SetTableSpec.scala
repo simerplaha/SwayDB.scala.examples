@@ -27,8 +27,8 @@ class SetTableSpec extends TestBase {
 
     //iterating TimeLogs
     db
-      .from(TimeLogRow(1, 0, ""))
       .stream
+      .from(TimeLogRow(1, 0, ""))
       .takeWhile(_.table == TimeLogTable)
       .foreach {
         row =>
@@ -37,8 +37,8 @@ class SetTableSpec extends TestBase {
 
     //iterating Users
     db
-      .from(UserRow(1, 0, ""))
       .stream
+      .from(UserRow(1, 0, ""))
       .takeWhile(_.table == UserTable)
       .foreach {
         row =>

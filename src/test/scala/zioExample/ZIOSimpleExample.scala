@@ -30,14 +30,14 @@ class ZIOSimpleExample extends TestBase {
             //print all key-values
             map
               .stream
-              .foreach[Task](println)
+              .foreach(println)
         }
         .flatMap {
           _ =>
             //result the size of the database.
             map
               .stream
-              .size[Task]
+              .size
         }
 
     //above tasks are not executed yet so the database stream will return empty

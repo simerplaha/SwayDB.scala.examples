@@ -1,18 +1,17 @@
 package configuringlevels
 
 import java.nio.file.Files
-import java.util.concurrent.Executors
 
-import swaydb.configs.level.SingleThreadFactory
+import swaydb.configs.level.DefaultExecutionContext
+import swaydb.core.build.BuildValidator
+import swaydb.data.DataType
 import swaydb.data.accelerate.{Accelerator, LevelZeroMeter}
 import swaydb.data.compaction.{CompactionExecutionContext, LevelMeter, Throttle}
 import swaydb.data.compression.{LZ4Compressor, LZ4Decompressor, LZ4Instance}
-import swaydb.data.config.IOAction
-import swaydb.data.config.{ConfigWizard, MMAP, RecoveryMode, _}
+import swaydb.data.config.{ConfigWizard, IOAction, MMAP, RecoveryMode, _}
 import swaydb.data.order.KeyOrder
 import swaydb.data.util.OperatingSystem
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 object ConfiguringLevels extends App {
@@ -22,24 +21,13 @@ object ConfiguringLevels extends App {
 
   val dir = Files.createTempDirectory(this.getClass.getSimpleName)
 
-  val myTestSingleThreadExecutionContext =
-    new ExecutionContext {
-      val threadPool = Executors.newSingleThreadExecutor(SingleThreadFactory.create())
-
-      def execute(runnable: Runnable) =
-        threadPool execute runnable
-
-      def reportFailure(exception: Throwable): Unit =
-        println(s"REPORT FAILURE! ${exception.getMessage}")
-    }
-
   val config =
     ConfigWizard
       .withPersistentLevel0( //level0
         dir = dir.resolve("level0"),
         mapSize = 4.mb,
         mmap = MMAP.Enabled(OperatingSystem.isWindows, ForceSave.Disabled),
-        compactionExecutionContext = CompactionExecutionContext.Create(myTestSingleThreadExecutionContext),
+        compactionExecutionContext = CompactionExecutionContext.Create(DefaultExecutionContext.compactionEC),
         recoveryMode = RecoveryMode.ReportFailure,
         acceleration =
           (meter: LevelZeroMeter) =>
@@ -69,8 +57,8 @@ object ConfiguringLevels extends App {
               Throttle(pushDelay = Duration.Zero, segmentsToPush = 0)
       )
       .withPersistentLevel( //level2
-        dir = dir.resolve("level2"),
-        otherDirs = Seq(Dir("/Disk2", 1), Dir("/Disk3", 3)),
+        dir = dir.resolve("target/level2"),
+        otherDirs = Seq(Dir("target/Disk2", 1), Dir("target/Disk3", 3)),
         mmapAppendix = MMAP.Enabled(OperatingSystem.isWindows, ForceSave.Disabled),
         appendixFlushCheckpointSize = 4.mb,
         sortedKeyIndex =
@@ -151,20 +139,22 @@ object ConfiguringLevels extends App {
 
   implicit val ordering = KeyOrder.default //import default sorting
 
+  implicit val validator = BuildValidator.DisallowOlderVersions(DataType.Custom)
+
   val db = //initialise the database with the above configuration
     SwayDB[Int, String, Nothing](
       config = config,
       fileCache =
         FileCache.Enable(
           maxOpen = 1000,
-          actorConfig = ActorConfig.Basic(ec = myTestSingleThreadExecutionContext, name = "FileCache")
+          actorConfig = ActorConfig.Basic(ec = DefaultExecutionContext.sweeperEC, name = "FileCache")
         ),
       memoryCache =
         MemoryCache.ByteCacheOnly(
           minIOSeekSize = 4098.bytes,
           skipBlockCacheSeekSize = 4098.bytes * 10,
           cacheCapacity = 1.gb,
-          actorConfig = ActorConfig.Basic(ec = myTestSingleThreadExecutionContext, name = "MemoryCache")
+          actorConfig = ActorConfig.Basic(ec = DefaultExecutionContext.sweeperEC, name = "MemoryCache")
         ),
       threadStateCache =
         ThreadStateCache.Limit(

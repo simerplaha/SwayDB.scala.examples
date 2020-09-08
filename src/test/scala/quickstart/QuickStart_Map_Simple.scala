@@ -7,8 +7,6 @@ object QuickStart_Map_Simple extends App {
   import swaydb._
   import swaydb.serializers.Default._ //import default serializers
 
-  implicit val bag = Bag.less
-
   //Create a memory database
   val map = memory.Map[Int, String, Nothing, Bag.Less]()
 

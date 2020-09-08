@@ -9,8 +9,6 @@ class QuickStartMemorySpec extends TestBase {
     import swaydb._
     import swaydb.serializers.Default._ //import default serializers
 
-    implicit val bag = Bag.apiIO
-
     //Create a memory database
     val db = memory.Map[Int, String, Nothing, IO.ApiIO]().get
 

@@ -9,7 +9,7 @@ import scala.util.Try
 
 class StreamSpec extends WordSpec with Matchers {
 
-  def stream: Stream[Int] =
+  def stream[BAG[_]](implicit bag: Bag[BAG]) =
     Stream
       .range(1, 1000)
       .map(_ - 1)

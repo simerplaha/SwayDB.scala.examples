@@ -18,7 +18,7 @@ class SliceReaderSpec extends WordSpec with Matchers {
 
       //write case class to Slice[Byte] as a sequence of bytes.
       val slice =
-        Slice.create[Byte](100) //create an unknown size of Slice
+        Slice.of[Byte](100) //create an unknown size of Slice
           .addInt(program.speedScore)
           .addLong(program.linesOfCode)
           .addString(program.language)

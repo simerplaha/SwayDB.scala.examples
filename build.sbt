@@ -1,4 +1,4 @@
-val swayDBVersion = "0.15"
+val swayDBVersion = "0.16"
 
 //val scala211 = "2.11.12" //for 2.11 see branch scala_2.11
 val scala212 = "2.12.11"
@@ -33,13 +33,11 @@ libraryDependencies ++=
     "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
     "org.scalatest" %% "scalatest" % "3.0.8" % Test,
     "ch.qos.logback" % "logback-classic" % "1.2.3" % Test,
-    "io.circe" %% "circe-core" % "0.12.0-M3" % Test,
-    "io.circe" %% "circe-generic" % "0.12.0-M3" % Test,
-    "io.circe" %% "circe-parser" % "0.12.0-M3" % Test,
     "org.junit.jupiter" % "junit-jupiter-api" % "5.5.2" % Test,
     "joda-time" % "joda-time" % "2.10.5" % Test,
     "io.swaydb" %% "swaydb" % swayDBVersion,
     "io.swaydb" %% "java" % swayDBVersion,
     "io.swaydb" %% "monix" % swayDBVersion,
-    "io.swaydb" %% "zio" % swayDBVersion
+    "io.swaydb" %% "zio" % swayDBVersion,
+    "io.swaydb" %% "boopickle" % swayDBVersion,
   ) ++ scalaParallelCollections(scalaVersion.value)

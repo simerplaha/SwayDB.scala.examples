@@ -20,7 +20,7 @@ class ChunkSpec extends TestBase {
 
     db.put((1, chunks(0)), (2, chunks(1)), (3, chunks(2))) //batch write the slices.
 
-    db.stream.size shouldBe 3
+    db.stream.count shouldBe 3
 
     val chunk1 = db.get(1).get.toArray
     val chuck2 = db.get(2).get.toArray

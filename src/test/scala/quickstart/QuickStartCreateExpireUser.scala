@@ -1,6 +1,7 @@
 package quickstart
 
 import base.UserTable
+import swaydb.data.Functions
 
 object QuickStartCreateExpireUser extends App {
 
@@ -8,21 +9,20 @@ object QuickStartCreateExpireUser extends App {
   import swaydb._
 
   //functions should always be registered on database startup.
-  implicit val functions = Map.Functions[UserKeys, UserValues, UserTable.UserFunctions]()
-  functions.register(UserTable.UserFunctions.ExpireUserFunction)
+  implicit val functions = Functions[PureFunction.Map[UserKey, UserValue]](UserTable.expireUserFunction)
 
-  val map = memory.Map[UserKeys, UserValues, UserTable.UserFunctions, IO.ApiIO]().get //Create a memory database
+  val map = memory.Map[UserKey, UserValue, PureFunction.Map[UserKey, UserValue], Bag.Less]() //Create a memory database
 
   map.put(
-    key = UserKeys.UserName("iron_man"),
-    value = UserValues.ActiveUser(name = "Tony Stark", email = "tony@stark.com", lastLogin = System.nanoTime())
-  ).get
+    key = UserKey.UserName("iron_man"),
+    value = UserValue.ActiveUser(name = "Tony Stark", email = "tony@stark.com", lastLogin = System.nanoTime())
+  )
 
   //get the user
-  println("User status: " + map.get(UserKeys.UserName("iron_man")).get) //User status: Some(ActiveUser(Tony Stark,tony@stark.com,705876613043474))
+  println("User status: " + map.get(UserKey.UserName("iron_man")).get) //User status: Some(ActiveUser(Tony Stark,tony@stark.com,705876613043474))
 
   //expire user using the registered ExpireFunction
-  map.applyFunction(UserKeys.UserName("iron_man"), UserTable.UserFunctions.ExpireUserFunction).get
+  map.applyFunction(UserKey.UserName("iron_man"), UserTable.expireUserFunction)
 
-  println("User status: " + map.get(UserKeys.UserName("iron_man")).get) //User status: Some(ExpiredUser)
+  println("User status: " + map.get(UserKey.UserName("iron_man")).get) //User status: Some(ExpiredUser)
 }

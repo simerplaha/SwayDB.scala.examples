@@ -33,7 +33,7 @@ class MonixSimpleExample extends TestBase {
         .flatMap {
           _ =>
             //result the size of the database.
-            map.stream.size
+            map.stream.count
         }
 
     //above tasks are not executed yet so the database stream will return empty

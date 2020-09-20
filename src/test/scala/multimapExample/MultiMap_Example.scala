@@ -7,14 +7,12 @@ import multimapExample.TableRow._
 import org.scalatest.OptionValues._
 import org.scalatest.concurrent.Eventually
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
+import swaydb.multimap.MultiPrepare
 
-import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration._
 
 /**
  * [[swaydb.MultiMap]] is an extension of [[swaydb.Map]] which allows creating nested [[swaydb.MultiMap]] or tree like structure.
- *
- * [[swaydb.MultiMap.schema]] can be used to add nested map.
  */
 class MultiMap_Example extends TestBase with Eventually {
 
@@ -28,11 +26,11 @@ class MultiMap_Example extends TestBase with Eventually {
     val root = memory.MultiMap[Table, PrimaryKey, TableRow, Nothing, Bag.Less]()
 
     //create two child maps under root.
-    val userTable = root.schema.init(mapKey = UserTable, keyType = classOf[UserPrimaryKey], valueType = classOf[UserRow])
-    val productTable = root.schema.init(mapKey = ProductTable, keyType = classOf[ProductPrimaryKey], valueType = classOf[ProductRow])
+    val userTable = root.child(mapKey = UserTable, keyType = classOf[UserPrimaryKey], valueType = classOf[UserRow])
+    val productTable = root.child(mapKey = ProductTable, keyType = classOf[ProductPrimaryKey], valueType = classOf[ProductRow])
 
     //create another child map under the UserTable map which expires after 10.seconds.
-    val childUserTable = userTable.schema.init(mapKey = UserTable, keyType = classOf[UserPrimaryKey], valueType = classOf[UserRow], expireAfter = 10.seconds)
+    val childUserTable = userTable.child(mapKey = UserTable, keyType = classOf[UserPrimaryKey], valueType = classOf[UserRow], expireAfter = 10.seconds)
 
     //user table entries
     userTable.put(UserPrimaryKey(email = "simer@mail.com"), UserRow(firstName = "Simer", lastName = "Plaha"))
@@ -47,28 +45,28 @@ class MultiMap_Example extends TestBase with Eventually {
     childUserTable.put(UserPrimaryKey(email = "child2@mail.com"), UserRow(firstName = "Child", lastName = "Two"))
 
     //read schema of parent UserTable.
-    userTable.schema.keys.materialize.toList should contain only UserTable
+    userTable.childrenKeys.materialize.toList should contain only UserTable
 
     //stream entries from both tables
-    userTable.stream.materialize.toList should contain only((UserPrimaryKey("simer@mail.com"), UserRow("Simer", "Plaha")), (UserPrimaryKey("val@mail.com"), UserRow("Valentyn", "Kolesnikov")))
-    productTable.stream.materialize.toList should contain only((ProductPrimaryKey(1), ProductRow(10.0)), (ProductPrimaryKey(2), ProductRow(20.0)))
-    childUserTable.stream.materialize.toList should contain only((UserPrimaryKey("child1@mail.com"), UserRow("Child", "One")), (UserPrimaryKey("child2@mail.com"), UserRow("Child", "Two")))
+    userTable.materialize.toList should contain only((UserPrimaryKey("simer@mail.com"), UserRow("Simer", "Plaha")), (UserPrimaryKey("val@mail.com"), UserRow("Valentyn", "Kolesnikov")))
+    productTable.materialize.toList should contain only((ProductPrimaryKey(1), ProductRow(10.0)), (ProductPrimaryKey(2), ProductRow(20.0)))
+    childUserTable.materialize.toList should contain only((UserPrimaryKey("child1@mail.com"), UserRow("Child", "One")), (UserPrimaryKey("child2@mail.com"), UserRow("Child", "Two")))
 
     //replace parent UserTable with a new table. This clear all previous entries and all it's child maps.
-    root.schema.replace(UserTable, classOf[UserPrimaryKey], classOf[UserRow])
+    root.replaceChild(UserTable, classOf[UserPrimaryKey], classOf[UserRow])
 
     //clear all existing entries.
-    userTable.stream.materialize.toList shouldBe empty
-    userTable.schema.stream.materialize.toList shouldBe empty
+    userTable.materialize.toList shouldBe empty
+    userTable.materialize.toList shouldBe empty
 
     //create a transaction that runs on all tables.
     val transaction =
-      userTable.toTransaction(Prepare.Remove(UserPrimaryKey("simer@mail.com"))) ++
-        childUserTable.toTransaction(Prepare.Remove(UserPrimaryKey("child2@mail.com"))) ++
-        productTable.toTransaction(Prepare.Expire(ProductPrimaryKey(1), 2.seconds))
+      MultiPrepare(userTable, Prepare.Remove(UserPrimaryKey("simer@mail.com"))) ++
+        MultiPrepare(childUserTable, Prepare.Remove(UserPrimaryKey("child2@mail.com"))) ++
+        MultiPrepare(productTable, Prepare.Expire(ProductPrimaryKey(1), 2.seconds))
 
     //commit the transactions on the root map.
-    root.commit(transaction)
+    root.commitMultiPrepare(transaction)
 
     userTable.get(UserPrimaryKey("simer@mail.com")) shouldBe empty
     childUserTable.get(UserPrimaryKey("child2@mail.com")) shouldBe empty

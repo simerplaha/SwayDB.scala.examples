@@ -3,7 +3,6 @@ package stockordering
 import base.TestBase
 import swaydb.data.order.KeyOrder
 import swaydb.data.slice.Slice
-import swaydb.data.util.ByteSizeOf
 import swaydb.serializers.Serializer
 
 import scala.util.Random
@@ -21,12 +20,13 @@ class StockOrderingSpec extends TestBase {
                           purchaseTime: Long, //should use DateTime here but keeping it simple for the example.
                           stockCode: String)
 
-    //build a custom serialiser for StockOrder type. You can also use Circe for this. See other examples.
+    //build a custom serializer for StockOrder type. You can also use Circe for this. See other examples.
     implicit object StockOrderSerializer extends Serializer[StockOrder] {
       override def write(data: StockOrder): Slice[Byte] = {
         val stockCodeBytes = data.stockCode.getBytes
         //2 ints + 1 long + stock bytes
-        Slice.create((ByteSizeOf.int * 2) + ByteSizeOf.long + stockCodeBytes.length)
+        Slice
+          .of[Byte](16 + stockCodeBytes.length)
           .addInt(data.orderId)
           .addInt(data.price)
           .addLong(data.purchaseTime)
@@ -58,11 +58,11 @@ class StockOrderingSpec extends TestBase {
     Random.shuffle(1 to 15).foreach {
       i: Int =>
         if (i <= 5) //it's Apple
-        db add StockOrder(i, i, System.currentTimeMillis(), "AAPL")
+          db add StockOrder(i, i, System.currentTimeMillis(), "AAPL")
         else if (i <= 10) //it's Google
-        db add StockOrder(i, i, System.currentTimeMillis(), "GOOGL")
+          db add StockOrder(i, i, System.currentTimeMillis(), "GOOGL")
         else //it's Tesla
-        db add StockOrder(i, i, System.currentTimeMillis(), "TSLA")
+          db add StockOrder(i, i, System.currentTimeMillis(), "TSLA")
     }
 
     val expected =

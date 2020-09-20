@@ -37,7 +37,7 @@ class ZIOSimpleExample extends TestBase {
             //result the size of the database.
             map
               .stream
-              .size
+              .count
         }
 
     //above tasks are not executed yet so the database stream will return empty

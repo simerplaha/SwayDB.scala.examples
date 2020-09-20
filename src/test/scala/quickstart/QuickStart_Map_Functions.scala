@@ -1,5 +1,9 @@
 package quickstart
 
+import sun.jvm.hotspot.debugger.cdbg.FunctionType
+import swaydb.PureFunctionScala.OnKeyValueDeadline
+import swaydb.data.Functions
+
 import scala.concurrent.duration._
 
 object QuickStart_Map_Functions extends App {
@@ -10,7 +14,7 @@ object QuickStart_Map_Functions extends App {
   implicit val bag = Bag.less
 
   //create a function that reads key & value and applies modifications.
-  val function: PureFunction.OnKeyValue[Int, String, Apply.Map[String]] =
+  val function: OnKeyValueDeadline[Int, String] =
     (key: Int, value: String, deadline: Option[Deadline]) =>
       //some random logic demoing all Apply types.
       if (key < 25)
@@ -22,13 +26,11 @@ object QuickStart_Map_Functions extends App {
       else //or else do nothing
         Apply.Nothing
 
-  type FunctionType = PureFunction[Int, String, Apply.Map[String]] //create the type of Function that can be registered in this Map.
-
   //register the function
-  implicit val functions = swaydb.Map.Functions[Int, String, FunctionType](function)
+  implicit val functions = Functions[PureFunction.Map[Int, String]](function)
 
   //Create a memory database
-  val map = memory.Map[Int, String, FunctionType, Bag.Less]()
+  val map = memory.Map[Int, String, PureFunction.Map[Int, String], Bag.Less]()
 
   map.put(key = 1, value = "one")
   map.get(key = 1).get //returns "one"

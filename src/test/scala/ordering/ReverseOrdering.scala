@@ -21,7 +21,6 @@ class ReverseOrdering extends WordSpec with Matchers {
 
     map
       .keys
-      .stream
       .materialize
       .toList should contain inOrderElementsOf (1 to 100).reverse
   }

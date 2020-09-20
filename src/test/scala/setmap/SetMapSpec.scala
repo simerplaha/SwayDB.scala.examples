@@ -13,9 +13,5 @@ class SetMapSpec extends WordSpec with Matchers {
 
     map.put(1, "one")
     map.get(1).value shouldBe "one"
-
-    //access the underlying set from SetMap
-    map.set.add((2, "two"))
-    map.get(2).value shouldBe "two"
   }
 }

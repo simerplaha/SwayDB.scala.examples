@@ -15,7 +15,7 @@ class ConfiguringMMAPAndForceSave extends WordSpec with Matchers {
     import swaydb.serializers.Default._
 
     val mmapEnabled =
-      MMAP.Enabled(
+      MMAP.On(
         //delete after MMAP are cleaned only on Windows.
         deleteAfterClean = OperatingSystem.isWindows,
         forceSave =
@@ -30,11 +30,11 @@ class ConfiguringMMAPAndForceSave extends WordSpec with Matchers {
     //create map and apply the above MMAP setting to all files - maps, appendices and segments.
     val map =
       persistent.Map[Int, String, Nothing, Bag.Less](
-          dir = s"target/${classOf[ConfiguringMMAPAndForceSave].getSimpleName}",
-          mmapMaps = mmapEnabled,
-          mmapAppendix = mmapEnabled,
-          segmentConfig = persistent.DefaultConfigs.segmentConfig().copyWithMmap(mmapEnabled)
-        )
+        dir = s"target/${classOf[ConfiguringMMAPAndForceSave].getSimpleName}",
+        mmapMaps = mmapEnabled,
+        mmapAppendix = mmapEnabled,
+        segmentConfig = persistent.DefaultConfigs.segmentConfig().copyWithMmap(mmapEnabled)
+      )
 
     map.put(1, "one")
     map.get(1) shouldBe Some("one")
@@ -45,7 +45,7 @@ class ConfiguringMMAPAndForceSave extends WordSpec with Matchers {
      */
     //disabled force save
     val disabledForceSave =
-    ForceSave.Disabled
+    ForceSave.Off
 
     //enables forceSave before clean
     val forceSaveBeforeClean =

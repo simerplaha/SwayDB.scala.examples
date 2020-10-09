@@ -33,7 +33,7 @@ object ProductExample extends App {
 
   implicit val functions: Functions[PureFunction.Map[Int, Product]] = Functions(function)
 
-  val map = memory.Map[Int, Product, PureFunction.Map[Int, Product], Bag.Less]()
+  val map = memory.Map[Int, Product, PureFunction.Map[Int, Product], Glass]()
 
   val product =
     Product(

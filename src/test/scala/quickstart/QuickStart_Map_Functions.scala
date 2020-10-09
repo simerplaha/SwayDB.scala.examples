@@ -1,6 +1,5 @@
 package quickstart
 
-import sun.jvm.hotspot.debugger.cdbg.FunctionType
 import swaydb.PureFunctionScala.OnKeyValueDeadline
 import swaydb.data.Functions
 
@@ -10,8 +9,6 @@ object QuickStart_Map_Functions extends App {
 
   import swaydb._
   import swaydb.serializers.Default._ //import default serializers
-
-  implicit val bag = Bag.less
 
   //create a function that reads key & value and applies modifications.
   val function: OnKeyValueDeadline[Int, String] =
@@ -30,7 +27,7 @@ object QuickStart_Map_Functions extends App {
   implicit val functions = Functions[PureFunction.Map[Int, String]](function)
 
   //Create a memory database
-  val map = memory.Map[Int, String, PureFunction.Map[Int, String], Bag.Less]()
+  val map = memory.Map[Int, String, PureFunction.Map[Int, String], Glass]()
 
   map.put(key = 1, value = "one")
   map.get(key = 1).get //returns "one"

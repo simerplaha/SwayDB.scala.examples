@@ -19,11 +19,8 @@ class MultiMap_Example extends TestBase with Eventually {
   "example" in {
     import swaydb._
 
-    //for simplicity use Bag-less type..
-    implicit val bag = Bag.less
-
     //Initialise in-memory MultiMap which returns the root map.
-    val root = memory.MultiMap[Table, PrimaryKey, TableRow, Nothing, Bag.Less]()
+    val root = memory.MultiMap[Table, PrimaryKey, TableRow, Nothing, Glass]()
 
     //create two child maps under root.
     val userTable = root.child(mapKey = UserTable, keyType = classOf[UserPrimaryKey], valueType = classOf[UserRow])

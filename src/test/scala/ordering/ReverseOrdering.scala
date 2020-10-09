@@ -15,7 +15,7 @@ class ReverseOrdering extends WordSpec with Matchers {
           (x compare y) * -1
       }
 
-    val map = memory.Map[Int, Int, Nothing, Bag.Less]()
+    val map = memory.Map[Int, Int, Nothing, Glass]()
 
     (1 to 100).foreach(int => map.put(int, int))
 

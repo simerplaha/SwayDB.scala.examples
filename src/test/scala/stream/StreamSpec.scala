@@ -15,8 +15,8 @@ class StreamSpec extends WordSpec with Matchers {
       .map(_ - 1)
       .filter(_ % 2 == 0)
 
-  "stream Bag.Less" in {
-    implicit val bag = Bag.less
+  "stream Glass" in {
+    implicit val bag = Bag.glass
 
     val sum = stream.foldLeft(0)(_ + _)
     sum shouldBe 249500

@@ -29,7 +29,7 @@ class ConfiguringMMAPAndForceSave extends WordSpec with Matchers {
 
     //create map and apply the above MMAP setting to all files - maps, appendices and segments.
     val map =
-      persistent.Map[Int, String, Nothing, Bag.Less](
+      persistent.Map[Int, String, Nothing, Glass](
         dir = s"target/${classOf[ConfiguringMMAPAndForceSave].getSimpleName}",
         mmapMaps = mmapEnabled,
         mmapAppendix = mmapEnabled,

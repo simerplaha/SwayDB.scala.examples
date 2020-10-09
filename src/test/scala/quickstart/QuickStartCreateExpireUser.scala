@@ -11,7 +11,7 @@ object QuickStartCreateExpireUser extends App {
   //functions should always be registered on database startup.
   implicit val functions = Functions[PureFunction.Map[UserKey, UserValue]](UserTable.expireUserFunction)
 
-  val map = memory.Map[UserKey, UserValue, PureFunction.Map[UserKey, UserValue], Bag.Less]() //Create a memory database
+  val map = memory.Map[UserKey, UserValue, PureFunction.Map[UserKey, UserValue], Glass]() //Create a memory database
 
   map.put(
     key = UserKey.UserName("iron_man"),
